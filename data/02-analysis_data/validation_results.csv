@@ -1,0 +1,7 @@
+test,status
+Dataset loaded successfully,Passed
+Required variables are present,Passed
+Data types are valid,Passed
+No missing values in critical variables,Passed
+Numerical variables are within expected ranges,Passed
+Categorical variables have valid levels,Passed

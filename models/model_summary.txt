@@ -1,0 +1,83 @@
+
+Model Info:
+ function:     stan_glm
+ family:       gaussian [identity]
+ formula:      technique_discernment ~ treatment + standardized_analytical_thinking + 
+	   standardized_conspiracy_belief + standardized_bullshit_receptivity + 
+	   gender + education + political_ideology + age_text
+ algorithm:    sampling
+ sample:       4000 (posterior sample size)
+ priors:       see help('prior_summary')
+ observations: 4191
+ predictors:   17
+
+Estimates:
+                                    mean   sd   10%
+(Intercept)                        1.7    0.2  1.5 
+treatmentInoculation               0.8    0.0  0.7 
+standardized_analytical_thinking   0.2    0.0  0.2 
+standardized_conspiracy_belief    -0.1    0.0 -0.1 
+standardized_bullshit_receptivity -0.2    0.0 -0.3 
+genderMale                        -0.1    0.1 -0.1 
+genderNon-binary                   0.3    0.2  0.0 
+genderPrefer not to say           -0.5    0.7 -1.4 
+educationDoctorate                -0.1    0.1 -0.3 
+educationHigh School              -0.4    0.3 -0.8 
+educationMaster's                  0.0    0.1 -0.2 
+political_ideologyLiberal          0.3    0.1  0.3 
+political_ideologyModerate        -0.1    0.1 -0.1 
+age_text25-34                     -0.2    0.1 -0.3 
+age_text35-44                     -0.2    0.1 -0.4 
+age_text45-54                     -0.2    0.1 -0.3 
+age_text55 or older               -0.4    0.1 -0.5 
+sigma                              1.6    0.0  1.6 
+                                    50%   90%
+(Intercept)                        1.7   1.9 
+treatmentInoculation               0.8   0.9 
+standardized_analytical_thinking   0.2   0.2 
+standardized_conspiracy_belief    -0.1  -0.1 
+standardized_bullshit_receptivity -0.2  -0.2 
+genderMale                        -0.1   0.0 
+genderNon-binary                   0.3   0.6 
+genderPrefer not to say           -0.6   0.3 
+educationDoctorate                -0.1   0.1 
+educationHigh School              -0.4   0.0 
+educationMaster's                  0.0   0.1 
+political_ideologyLiberal          0.3   0.4 
+political_ideologyModerate        -0.1   0.0 
+age_text25-34                     -0.2  -0.1 
+age_text35-44                     -0.2  -0.1 
+age_text45-54                     -0.2  -0.1 
+age_text55 or older               -0.4  -0.3 
+sigma                              1.6   1.6 
+
+Fit Diagnostics:
+           mean   sd   10%   50%   90%
+mean_PPD 1.9    0.0  1.9   1.9   2.0  
+
+The mean_ppd is the sample average posterior predictive distribution of the outcome variable (for details see help('summary.stanreg')).
+
+MCMC diagnostics
+                                  mcse Rhat n_eff
+(Intercept)                       0.0  1.0  1839 
+treatmentInoculation              0.0  1.0  5517 
+standardized_analytical_thinking  0.0  1.0  5052 
+standardized_conspiracy_belief    0.0  1.0  5133 
+standardized_bullshit_receptivity 0.0  1.0  5309 
+genderMale                        0.0  1.0  4975 
+genderNon-binary                  0.0  1.0  5610 
+genderPrefer not to say           0.0  1.0  5861 
+educationDoctorate                0.0  1.0  2129 
+educationHigh School              0.0  1.0  4017 
+educationMaster's                 0.0  1.0  2064 
+political_ideologyLiberal         0.0  1.0  3697 
+political_ideologyModerate        0.0  1.0  4254 
+age_text25-34                     0.0  1.0  2293 
+age_text35-44                     0.0  1.0  2391 
+age_text45-54                     0.0  1.0  2601 
+age_text55 or older               0.0  1.0  2111 
+sigma                             0.0  1.0  4315 
+mean_PPD                          0.0  1.0  4057 
+log-posterior                     0.1  1.0  1587 
+
+For each parameter, mcse is Monte Carlo standard error, n_eff is a crude measure of effective sample size, and Rhat is the potential scale reduction factor on split chains (at convergence Rhat=1).
