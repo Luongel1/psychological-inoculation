@@ -35,7 +35,7 @@ cleaned_data <- read_parquet(here::here("data/02-analysis_data/analysis_data.par
 
 # Introduction
 
-The pervasive influence of social media platforms on public opinion has brought increasing attention to the challenge of misinformation and manipulative content. These platforms provide fertile ground for the spread of misleading narratives designed to manipulate beliefs, decisions, and behaviors. Countering this phenomenon is critical to preserving informed decision-making and democratic processes.
+Social media's influence on public opinion has brought increasing attention to the concerns about misinformation and manipulative content. These platforms facilitate the spread of misleading narratives that shape beliefs, decisions, and behaviors. Addressing this challenge is vital to preserving informed decision-making and democratic processes.
 
 Psychological inoculation offers a proactive approach to misinformation, arming individuals with the tools to resist manipulation before exposure. Analogous to a medical vaccine, inoculation introduces individuals to weakened forms of manipulative techniques, fostering resistance to their influence when encountered in real-world scenarios. This research examines the efficacy of psychological inoculation in enhancing "technique discernment"—the ability to distinguish manipulative content from neutral information—on social media.
 
@@ -48,26 +48,28 @@ The remainder of this paper is structured as follows: @sec-data details the data
 
 # Data {#sec-data}
 
-The data for this study is analyzed using the statistical programming language R [@citeR], leveraging an extensive suite of packages for data cleaning, analysis, visualization, and modeling. The primary tools include tidyverse [@citeTidyverse] for data manipulation and visualization, arrow [@citeArrow] for efficient data storage and retrieval, ggplot2 [@citeGgplot2] for data visualization, and rstanarm [@rstanarm] for Bayesian modeling. Additional packages used include modelsummary [@citeModleSummary] for generating model summaries, marginaleffects [@citeMarginalEffects] for interpreting statistical models, and kableExtra [@citeKableExtra] for creating polished tables.
+The data for this study is analyzed using the statistical programming language R [@citeR], leveraging an extensive suite of packages for data cleaning, analysis, visualization, and modeling. The primary packages include `tidyverse` [@citeTidyverse] for data manipulation and visualization, `arrow` [@citeArrow] for efficient data storage and retrieval, `ggplot2` [@citeGgplot2] for data visualization, and `rstanarm` [@rstanarm] for Bayesian modeling. Additional packages used include `modelsummary` [@citeModleSummary] for generating model summaries, `marginaleffects` [@citeMarginalEffects] for interpreting statistical models, and `kableExtra` [@citeKableExtra] for creating polished tables.
 
 These tools enable the analysis of a dataset focused on psychological inoculation, specifically its effect on participants' ability to discern manipulative techniques in social media content. The data preparation and analysis pipeline ensures robust handling of variables and addresses potential sources of bias, making the results both reliable and interpretable.
 
 
 ## Data Source
 	
-This study draws on data collected through a controlled experimental design investigating the effects of psychological inoculation on individuals' ability to discern manipulative content in social media. The experiment was conducted with participants representing diverse demographic, psychological, and behavioral profiles, ensuring a robust dataset for analysis. The data provides insight into the efficacy of inoculation treatments in fostering resistance to manipulative techniques and includes variables measuring psychological traits, demographic factors, and discernment ability. 
+The data for this study was sourced from a controlled experimental design hosted on the Open Science Framework (OSF) platform, accessible at https://osf.io/3769y/. The experiment examined the effects of psychological inoculation on individuals' ability to identify manipulative content on social media. Participants were recruited to represent diverse demographic, psychological, and behavioral profiles, ensuring a well-rounded and robust dataset.
 
-This dataset is particularly suited for this research due to its comprehensive coverage of both the treatment's impact and the interplay of covariates such as gender, education, and political ideology. It enables the exploration of nuanced relationships, making it an ideal resource for examining the proposed hypotheses. Data collection adhered to ethical guidelines, ensuring participant confidentiality and informed consent.
+Data collection followed strict ethical protocols, including obtaining informed consent and ensuring participant confidentiality. Participants were randomly assigned to inoculation or control groups and completed a series of tasks assessing their discernment of manipulative and neutral social media posts. Additionally, demographic factors such as age, gender, education, and political ideology, along with psychological traits, were recorded to enable detailed analysis of covariate effects.
+
+This dataset is particularly suitable for evaluating the impact of inoculation interventions due to its comprehensive design, which captures the treatment's efficacy and explores its relationship with various demographic and psychological variables. The structured and transparent methodology ensures reliability, making this dataset an ideal resource for testing the proposed hypotheses.
 
 ## Data Cleaning and Variables
 
-The dataset used in this study underwent extensive cleaning to ensure the inclusion of only relevant variables and high-quality data for the analysis. The raw data was read from the "Combined" tab of an Excel file and systematically processed to address missing values, recode variables for clarity, and standardize the dataset for meaningful analysis. This process resulted in a structured dataset with clearly defined variables essential for exploring the relationship between psychological inoculation and participants’ ability to discern manipulative content on social media.
+The dataset used in this study underwent extensive cleaning to ensure the inclusion of only relevant variables and high-quality data for the analysis. The raw data was read from the "Combined" tab of OSF's 'Studies 1-5 datasets' and systematically processed to address missing values, renamed variables for clarity, and standardize the dataset for meaningful analysis. This process resulted in a structured dataset with clearly defined variables essential for exploring the relationship between psychological inoculation and participants’ ability to discern manipulative content on social media.
 
 The cleaning process started by filtering out rows with missing values in critical variables, such as `Condition`, `Diff-Technique`, `Age-text`, `Gender-text`, `Education`, `Political-Ideology`, `Bullshit-Receptivity`, `Conspiracy-Belief`, and `Analytical-Thinking`. The rationale for this step was to ensure that all variables of interest had complete information, enabling meaningful analysis.
 
 To facilitate analysis, key variables were transformed and standardized:
 
-- **Treatment** Assignment: The `Condition` variable, indicating whether a participant was part of the inoculation or control group, was transformed into a binary categorical variable named `treatment` with levels "Inoculation" and "Control."
+- **Treatment Assignment**: The `Condition` variable, indicating whether a participant was part of the inoculation or control group, was transformed into a binary categorical variable named `treatment` with levels "Inoculation" and "Control."
 - **Demographics**: The `Gender-text` variable was standardized to include consistent categories such as "Male," "Female," "Non-binary," "Prefer not to say," and "Other." The `Education` variable was similarly mapped to meaningful categories like "High School," "Bachelor's," "Master's," and "Doctorate."
 - **Age Representation**: The `Age-text` variable was retained as a character variable to represent age ranges.
 - **Psychological Variables**: Key psychological variables, including `Analytical-Thinking`, `Conspiracy-Belief`, and `Bullshit-Receptivity`, were standardized using z-scores to facilitate comparison.
@@ -76,10 +78,49 @@ To facilitate analysis, key variables were transformed and standardized:
 The final cleaned dataset included the following variables:
 `treatment`, `technique_discernment`, `standardized_analytical_thinking`, `standardized_conspiracy_belief`, `standardized_bullshit_receptivity`, `gender`, `education`, `political_ideology`, and `age_text.`
 
-The cleaned dataset was summarized to provide an overview of its structure and distribution. The first summary table (shown below) provides a preview of the first five rows of the dataset, highlighting key variables across treatment groups, psychological measures, and demographics.
-
+The cleaned dataset was summarized to provide an overview of its structure and distribution. @tbl-clean-data provides a preview of the first five rows of the dataset, highlighting key variables across treatment groups, psychological measures, and demographics.
 
 ```{r}
+#| label: tbl-clean-data
+#| tbl-cap: "Preview of the cleaned OSF dataset"
+#| echo: false
+#| warning: false
+#| message: false
+
+# Preview of the first few rows of the dataset
+cleaned_data %>%
+  slice_head(n = 5) %>%
+  select(treatment, technique_discernment, standardized_analytical_thinking,
+         standardized_conspiracy_belief, standardized_bullshit_receptivity,
+         gender, education, political_ideology, age_text) %>%
+  kable(booktabs = TRUE, linesep = "") %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
+  add_header_above(c(" " = 3, "Psychological Variables" = 3, "Demographics" = 3))
+
+```
+
+```{r}
+#| label: tbl-numeric
+#| tbl-cap: "Statistics summary of the numeric variables in cleaned OSF dataset"
+#| echo: false
+#| warning: false
+#| message: false
+
+# Summary statistics for numeric variables
+numeric_summary <- cleaned_data %>%
+  select(technique_discernment, standardized_analytical_thinking,
+         standardized_conspiracy_belief, standardized_bullshit_receptivity) %>%
+  summary()
+
+numeric_summary %>%
+  kable(booktabs = TRUE, linesep = "") %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
+  add_header_above(c(" " = 1, "Numeric Variables Summary" = 4))
+```
+
+```{r}
+#| label: tbl-categorial
+#| tbl-cap: "Statistics summary of the categorical variables in cleaned OSF dataset"
 #| echo: false
 #| warning: false
 #| message: false
@@ -154,10 +195,14 @@ table_output
 
 ```
 
-The categorical summary table provides an overview of the distribution of categorical variables within the dataset. The treatment groups are evenly split, with 2,757 participants in the Control group and 2,748 in the Inoculation group, ensuring a balanced experimental design. Gender distribution reveals that the dataset includes 2,751 females, 2,685 males, and a smaller representation of non-binary individuals (52) and those preferring not to disclose their gender (7). Educational attainment shows a higher concentration of participants with advanced degrees, including 1,709 Master's and 2,306 Doctorate holders, while fewer participants reported a High School education (1,300) or a Bachelor's degree (149). Political ideology is fairly diverse, with 2,500 identifying as Liberal, 1,700 as Moderate, and 1,705 as Conservative, alongside 600 identifying as Other. The age distribution spans from younger participants aged 18–24 (707) to those aged 55 and older (1,528), reflecting a broad demographic representation across age groups. These insights highlight the diversity of the dataset across key demographic and experimental variables.
+@tbl-categorical demonstrates a balanced experimental design between the treatment groups, with 2,757 participants in the Control group and 2,748 in the Inoculation group. Gender distribution reflects a higher representation of females (2,751) and males (2,685), alongside smaller groups of non-binary individuals (52) and those preferring not to disclose their gender (7). Regarding education, the data is skewed towards participants with advanced degrees, as evidenced by 2,306 participants holding Doctorates and 1,709 with Master's degrees, whereas only a small fraction reported High School (37) or Bachelor's education (149). Political ideology distribution shows considerable diversity: 2,201 participants identify as Liberal, 2,147 as Conservative, and 1,157 as Moderate. Age distribution spans a broad range, with the largest cohort being participants aged 55 or older (1,528) and the smallest being those aged 18–24 (707).
 
 
-The summary tables provide a comprehensive view of the dataset's variability, capturing both numerical and categorical distributions across treatment groups, psychological measures, and demographic characteristics. The numerical summary table highlights that the standardized psychological variables are appropriately centered and scaled, with means near zero, ensuring straightforward interpretability for subsequent analyses. The categorical summary table complements this by detailing the distribution of participants across key categorical variables. Treatment groups are well-balanced, with 2,757 participants in the Control group and 2,748 in the Inoculation group, ensuring robust comparisons. Gender representation is diverse, with 2,751 females, 2,685 males, and smaller groups identifying as non-binary or preferring not to disclose their gender. Educational attainment spans a range of categories, with a strong representation of individuals holding advanced degrees. Political ideology and age groups also demonstrate broad diversity, with substantial representation across categories. Together, these tables illustrate that the dataset is well-suited for examining treatment effects while controlling for psychological and demographic covariates. The cleaned dataset thus serves as a reliable foundation for modeling and hypothesis testing in the subsequent sections of the report.
+@tbl-numeric complements the categorical insights by providing key statistics about continuous variables. For `technique_discernment`, scores range widely from -4.89 to 6.00, with a mean of 1.83, indicating that participants’ ability to discern information varies greatly. The first quartile (0.50) and median (1.83) suggest a central tendency around a moderately positive discernment score.
+
+Similarly, `standardized_analytical_thinking` has a mean of 0, consistent with standardization, and ranges from -1.16 to 1.76. The third quartile value (0.79) indicates that a significant portion of participants scored above average in analytical thinking.
+
+For `standardized_conspiracy_belief`, the mean of 0 and a range of -2.77 to 1.79 show a distribution where most participants lean slightly negative or neutral, as reflected in the median (0.06). `Standardized_bullshit_receptivity` displays a similar pattern, with scores ranging from -1.81 to 2.44, a mean of 0, and a median of 0.10, suggesting slight receptivity for many participants but significant variability across the population.
 
 ## Data Measurment
 
@@ -165,17 +210,17 @@ Because the data for this research was collected through surveys, it is crucial 
 
 The variable Condition assigns respondents to either the "Control" or "Inoculation" treatment groups. This assignment is self-reported and dependent on accurate data handling during survey administration. Any misclassification in this variable could compromise the validity of treatment effect estimations. The balance between the two groups, as reflected in the summary tables, suggests appropriate randomization, but unmeasured biases could still affect the results.
 
-The psychological variables, including Diff-Technique (representing technique discernment), Bullshit-Receptivity, Conspiracy-Belief, and Analytical-Thinking, are measured using self-reported scales. These measures depend heavily on respondents’ honest and consistent self-assessments. For example, respondents may overstate their analytical thinking abilities or understate their susceptibility to conspiratorial beliefs due to social desirability bias. Furthermore, while these variables were standardized for comparability, it is essential to note that standardization assumes a normal distribution of the underlying constructs, which may not hold true for all measures.
+The psychological variables, including `Diff-Technique` (representing technique discernment), `Bullshit-Receptivity`, `Conspiracy-Belief`, and `Analytical-Thinking`, are measured using self-reported scales. These measures depend heavily on respondents’ honest and consistent self-assessments. For example, respondents may overstate their analytical thinking abilities or understate their susceptibility to conspiratorial beliefs due to social desirability bias. Furthermore, while these variables were standardized for comparability, it is essential to note that standardization assumes a normal distribution of the underlying constructs, which may not hold true for all measures.
 
-Demographic variables such as Gender-text, Education, and Age-text provide critical contextual information but are also subject to issues of self-reporting. For instance, the Gender-text variable captures a wide range of gender identities, including "Non-binary" and "Prefer not to say." While this inclusivity is commendable, it introduces variability in the dataset, particularly when group sizes are small, which could limit statistical power in subgroup analyses.
+Demographic variables such as `Gender-text`, `Education`, and `Age-text` provide critical contextual information but are also subject to issues of self-reporting. For instance, the `Gender-text` variable captures a wide range of gender identities, including "Non-binary" and "Prefer not to say." While this inclusivity is commendable, it introduces variability in the dataset, particularly when group sizes are small, which could limit statistical power in subgroup analyses.
 
-Similarly, the Education variable categorizes respondents into levels such as "High School," "Bachelor's," "Master's," and "Doctorate." While these categories provide a clear stratification of educational attainment, there may be discrepancies in how respondents interpret their educational qualifications, particularly for international participants whose education systems may not align with these classifications. Missing values in this variable could also indicate respondents' reluctance to disclose their educational background.
+Similarly, the `Education` variable categorizes respondents into levels such as "High School," "Bachelor's," "Master's," and "Doctorate." While these categories provide a clear stratification of educational attainment, there may be discrepancies in how respondents interpret their educational qualifications, particularly for international participants whose education systems may not align with these classifications. Missing values in this variable could also indicate respondents' reluctance to disclose their educational background.
 
-The Age-text variable represents respondents' age groups, providing a straightforward breakdown into categories such as "18-24," "25-34," and "55 or older." These categories offer a broad overview but may overlook finer gradations in age that could influence psychological or behavioral outcomes.
+The `Age-text` variable represents respondents' age groups, providing a straightforward breakdown into categories such as "18-24," "25-34," and "55 or older." These categories offer a broad overview but may overlook finer gradations in age that could influence psychological or behavioral outcomes.
 
-The variable Political-Ideology categorizes respondents into "Liberal," "Moderate," and "Conservative." While these categories simplify analysis, they may mask the nuance of individuals' political beliefs, particularly for those who hold mixed or unconventional ideologies. Additionally, respondents' self-reported political alignment might be influenced by social desirability or recall bias, particularly in polarized contexts where identifying with one ideology may carry stigma.
+The variable `Political-Ideology` categorizes respondents into "Liberal," "Moderate," and "Conservative." While these categories simplify analysis, they may mask the nuance of individuals' political beliefs, particularly for those who hold mixed or unconventional ideologies. Additionally, respondents' self-reported political alignment might be influenced by social desirability or recall bias, particularly in polarized contexts where identifying with one ideology may carry stigma.
 
-Like many survey-based studies, this dataset is subject to recall bias, social desirability bias, and potential non-response biases. For instance, participants may provide responses that they perceive as socially acceptable rather than those that truly reflect their beliefs or behaviors. Furthermore, missing data in key variables such as Education and Political-Ideology could lead to biased estimates if the missingness is not random.
+Like many survey-based studies, this dataset is subject to recall bias, social desirability bias, and potential non-response biases. For instance, participants may provide responses that they perceive as socially acceptable rather than those that truly reflect their beliefs or behaviors. Furthermore, missing data in key variables such as `Education` and `Political-Ideology` could lead to biased estimates if the missingness is not random.
 
 Despite these challenges, the dataset provides a rich foundation for exploring the effects of psychological inoculation on technique discernment while accounting for a diverse range of demographic and psychological variables. Careful interpretation and robust statistical methods will help mitigate these limitations in subsequent analyses.
 
@@ -185,13 +230,14 @@ Despite these challenges, the dataset provides a rich foundation for exploring t
 The psychological inoculation approach aims to improve individuals' ability to discern techniques used in misinformation. To understand the treatment's impact, the distribution of `technique_discernment` was examined for the control and inoculation groups. As shown in @fig-technique, the inoculation group has a slightly higher mean discernment score compared to the control group, suggesting potential effectiveness. However, overlap in distributions indicates that further modeling is required to establish statistical significance.
 
 ```{r}
+#| label: fig-technique
+#| fig-cap: Distribution of Technique Discernment by Treatment Groups
 #| echo: false
 #| warning: false
 #| message: false
 
 ggplot(cleaned_data, aes(x = treatment, y = technique_discernment, fill = treatment)) +
   geom_boxplot(alpha = 0.7, outlier.shape = NA) +
-  geom_jitter(width = 0.2, alpha = 0.3) +
   scale_fill_brewer(palette = "Set2") +
   labs(title = "Technique Discernment by Treatment", x = "Treatment Group", y = "Technique Discernment") +
   theme_minimal()
@@ -201,6 +247,8 @@ ggplot(cleaned_data, aes(x = treatment, y = technique_discernment, fill = treatm
 Ensuring balance across demographic variables is critical for isolating treatment effects. @fig-demographics illustrates the distribution of key demographic variables across treatment groups. Gender representation appears balanced, with similar proportions of male, female, and non-binary participants in both groups. Education and political ideology also display reasonable distributions, mitigating concerns of systematic imbalances.
 
 ```{r}
+#| label: fig-demographics
+#| fig-cap: Distribution of Key Demographic Variables Across Treatment groups
 #| echo: false
 #| warning: false
 #| message: false
@@ -235,11 +283,11 @@ grid.arrange(plot_gender, plot_education, plot_ideology, ncol = 3)
 The standardized psychological variables: `standardized_analytical_thinking`, `standardized_bullshit_receptivity`, and `standardized_conspiracy_belief`—are key metrics for evaluating cognitive and emotional responses to misinformation. @fig-psych compares these variables across treatment groups, revealing slight but consistent differences favoring the inoculation group. For instance, the inoculation group shows lower susceptibility to conspiracy beliefs, aligning with the intended effects of the intervention.
 
 ```{r}
+#| label: fig-psych
+#| fig-cap: Comparing Standardized Variables Across Treatment Groups
 #| echo: false
 #| warning: false
 #| message: false
-
-library(tidyr)
 
 # Reshape data to long format
 long_data <- cleaned_data %>%
@@ -252,7 +300,6 @@ long_data <- cleaned_data %>%
 # Plot using facets
 ggplot(long_data, aes(x = treatment, y = value, fill = treatment)) +
   geom_violin(alpha = 0.7) +
-  geom_jitter(width = 0.2, alpha = 0.2) +
   labs(title = "Psychological Variables by Treatment", 
        x = "Treatment Group", 
        y = "Standardized Value") +
@@ -265,6 +312,8 @@ ggplot(long_data, aes(x = treatment, y = value, fill = treatment)) +
 ```
 To explore potential interaction effects between age and political ideology, @fig-age-ideology examines the relationship between these variables across treatment groups. Younger participants (ages 18-34) tend to lean liberal, while older participants are more evenly distributed across ideological categories. This interaction warrants further analysis to determine its implications for treatment effectiveness.
 ```{r}
+#| label: fig-age-ideology
+#| fig-cap: Age and Political Ideology Distribution Across Treatment Groups
 #| echo: false
 #| warning: false
 #| message: false
@@ -280,18 +329,16 @@ ggplot(cleaned_data, aes(x = age_text, fill = political_ideology)) +
 
 ```
 
-The visual analyses provide initial insights into the balance and variability of key variables across treatment groups. Differences in technique discernment and standardized psychological variables suggest potential treatment effects. However, the observed overlap and interaction effects underscore the need for multivariate modeling to disentangle causal relationships.
+The visual analyses provide initial insights into the balance and variability of key variables across treatment groups. Differences in technique discernment and standardized psychological variables suggest potential treatment effects. However, the observed overlap and interaction effects highlight the need for multivariate modeling to disentangle causal relationships.
 
-
-
-
-# Model
+# Model {#sec-model}
 
 This study employs a Bayesian linear regression model to investigate the effects of psychological inoculation on key standardized psychological measures, including analytical thinking, bullshit receptivity, and conspiracy belief. The model is structured as follows:
 
 \begin{align}
 y_i | \mu_i, \sigma^2 &\sim \text{Normal}(\mu_i, \sigma^2) \\
-\mu_i &= \alpha + \beta_1 \times \text{Treatment}_i + \beta_2 \times \text{Gender}_i + \beta_3 \times \text{Education}_i + \beta_4 \times \text{Political Ideology}_i + \beta_5 \times \text{Age Group}_i \\
+\mu_i &= \alpha + \beta_1 \times \text{Treatment}_i + \beta_2 \times \text{Gender}_i + \beta_3 \times \text{Education}_i + \beta_4 \times \text{Political Ideology}_i
++ \beta_5 \times \text{Age Group}_i \\
 \alpha &\sim \text{Normal}(0, 2.5) \\
 \beta_j &\sim \text{Normal}(0, 2.5), \quad j = 1, 2, ..., 5
 \end{align}
@@ -310,11 +357,11 @@ In this model:
   \end{itemize}
 \end{itemize}
 
-### Priors
+## Priors
 
-Each parameter is assigned a weakly informative prior. The intercept and coefficients (\( \alpha, \beta_j \)) are modeled using a Normal distribution with mean 0 and standard deviation 2.5 to allow flexibility while avoiding extreme parameter estimates. This regularization improves interpretability and stabilizes estimation, particularly with categorical predictors.
+Each parameter is assigned a weakly informative prior. The intercept and coefficients ( $\alpha$, $\beta_j$) are modeled using a Normal distribution with mean 0 and standard deviation 2.5 to allow flexibility while avoiding extreme parameter estimates. This regularization improves interpretability and stabilizes estimation, particularly with categorical predictors.
 
-### Modeling Approach
+## Modeling Approach
 
 Bayesian methods are particularly advantageous for this analysis, as they allow for the incorporation of prior information and produce a full posterior distribution for each parameter, enabling robust inference. This approach is particularly relevant in studies like psychological inoculation, where prior studies can provide valuable insights into expected effects.
 
@@ -322,11 +369,11 @@ Alternative approaches, such as frequentist regression, were considered but ulti
 
 ### Implementation
 
-The Bayesian regression model is implemented in R \cite{citeR} using the \texttt{rstanarm} package \cite{rstanarm}. The \texttt{rstanarm} package uses Markov Chain Monte Carlo (MCMC) sampling to estimate the posterior distributions of the parameters. The default priors in \texttt{rstanarm} are employed for this analysis, which align with the weakly informative priors described above.
+The Bayesian regression model is implemented in R [@citeR] using the `rstanarm` package [@rstanarm]. The `rstanarm` package uses Markov Chain Monte Carlo (MCMC) sampling to estimate the posterior distributions of the parameters. The default priors in `rstanarm` are employed for this analysis, which align with the weakly informative priors described above.
 
 ### Sampling
 
-To optimize computational efficiency, a random subsample of 3000 observations is used to fit the model. This ensures manageable runtime without sacrificing the representativeness of the data.
+To optimize computational efficiency, a random sub-sample of 3000 observations is used to fit the model. This ensures manageable run-time without sacrificing the representation of the data.
 
 ### Justification for Model Choice
 
@@ -348,8 +395,6 @@ The Bayesian modeling approach is justified by its ability to incorporate prior 
 In summary, the Bayesian regression model is well-suited to address the research questions of this study, leveraging its ability to incorporate prior knowledge, handle complex relationships, and provide robust estimates of treatment effects while controlling for demographic variables. The model's structure and the inclusion of key covariates reflect a theoretically grounded approach to understanding the impact of psychological inoculation on critical thinking and resistance to misinformation.
 
 
-# Results
-
 # Results {#sec-results}
 
 ## Model Summary
@@ -357,6 +402,8 @@ In summary, the Bayesian regression model is well-suited to address the research
 The Bayesian linear regression models, developed to assess the effects of psychological inoculation on analytical thinking, bullshit receptivity, and conspiracy belief, reveal several notable findings. The results are summarized in @tbl-modelresults.
 
 ```{r}
+#| label: tbl-modelresults
+#| fig-cap: Summary of Bayesian Linear Regression on the Effects of Psychological Inoculation 
 #| echo: false
 #| eval: true
 #| warning: false
@@ -406,23 +453,24 @@ model_summary_table %>%
 ```
 @tbl-modelresults provides the posterior mean estimates and median absolute deviation (MAD) of the coefficients for each predictor. The intercept represents the expected outcome when all predictors are at their reference levels. For example, the baseline levels include individuals in the control group, identifying as "Male," with "High School" education, "Moderate" political ideology, and belonging to the "18–24" age group.
 
-Analytical Thinking
+### Analytical Thinking
 The results indicate a statistically significant positive effect of the inoculation treatment on standardized analytical thinking scores. Participants in the inoculation group demonstrate higher analytical thinking compared to the control group. The coefficient for the treatment variable is positive, indicating a meaningful increase in analytical thinking.
 
-Bullshit Receptivity
+### Bullshit Receptivity
 For bullshit receptivity, the results suggest a negative relationship between inoculation treatment and receptivity to misleading information. Individuals in the inoculation group exhibit lower bullshit receptivity scores, implying that the treatment enhances their ability to discern and reject implausible or deceptive claims.
 
-Conspiracy Belief
+### Conspiracy Belief
 The model examining conspiracy beliefs reveals that inoculation treatment reduces susceptibility to conspiracy theories. The negative coefficient for the treatment variable suggests a statistically significant decline in conspiracy belief scores among treated participants.
 
-Demographic Effects
+### Demographic Effects
 Gender, education, political ideology, and age group are included as covariates to control for demographic differences:
 
-Gender: There is no substantial difference in psychological measures between genders, except for a slight increase in analytical thinking for females.
-Education: Higher education levels, such as Bachelor's or Master's degrees, are positively associated with analytical thinking and negatively associated with bullshit receptivity and conspiracy belief.
-Political Ideology: Conservative participants tend to score higher on bullshit receptivity and conspiracy belief compared to their liberal counterparts.
-Age Group: Older age groups generally exhibit lower scores for bullshit receptivity and conspiracy belief, while analytical thinking increases with age.
+- **Gender**: There is no substantial difference in psychological measures between genders, except for a slight increase in analytical thinking for females.
+- **Education**: Higher education levels, such as Bachelor's or Master's degrees, are positively associated with analytical thinking and negatively associated with bullshit receptivity and conspiracy belief.
+- **Political Ideology**: Conservative participants tend to score higher on bullshit receptivity and conspiracy belief compared to their liberal counterparts.
+- **Age Group**: Older age groups generally exhibit lower scores for bullshit receptivity and conspiracy belief, while analytical thinking increases with age.
 Credibility Intervals
+
 @fig-modelresults1 illustrates the 90% credibility intervals for the coefficients, highlighting the range of likely values for each estimate. Coefficients with credibility intervals that do not cross zero are statistically significant.
 
 ```{r}
@@ -431,7 +479,6 @@ Credibility Intervals
 #| echo: false
 #| warning: false
 #| message: false
-
 
 # Ensure required libraries are installed
 if (!require("rstanarm")) install.packages("rstanarm")
@@ -460,29 +507,51 @@ posterior_interval <- cbind(
 # Rename columns for clarity
 colnames(posterior_interval) <- c("Predictor", "Estimate", "Lower", "Upper")
 
+# Clean up predictor names: Add colons and fix variable formatting
+posterior_interval$Predictor <- posterior_interval$Predictor %>%
+  gsub("_", " ", .) %>%                       # Replace underscores with spaces
+  gsub("gender(\\w+)", "gender: \\1", .) %>% # Format gender variables
+  gsub("education(\\w+)", "education: \\1", .) %>% # Format education variables
+  gsub("political ideology(\\w+)", "political ideology: \\1", .) %>% # Format political ideology
+  gsub("age text(\\d+-\\d+|55 or older)", "age: \\1", .) %>% # Format age variables
+  gsub("standardized analytical thinking", "standardized analytical thinking", .) %>%
+  gsub("standardized conspiracy belief", "standardized conspiracy belief", .) %>%
+  gsub("standardized bullshit receptivity", "standardized bullshit receptivity", .) %>%
+  gsub("\\(Intercept\\)", "Baseline: Intercept", .) # Adjust intercept formatting
+
+# Capitalize certain values, e.g., "Master's" or "Male"
+posterior_interval$Predictor <- posterior_interval$Predictor %>%
+  gsub("Male", "Male", .) %>%
+  gsub("Female", "Female", .) %>%
+  gsub("Master s", "Master's", .) %>% # Correct possessive forms
+  gsub("Doctorate", "Doctorate", .) %>%
+  gsub("High School", "High School", .)
+
 # Create the credibility interval plot
 ggplot(posterior_interval, aes(x = reorder(Predictor, Estimate), y = Estimate)) +
-  geom_point(size = 3) +
-  geom_errorbar(aes(ymin = Lower, ymax = Upper), width = 0.2) +
+  geom_point(size = 3, color = "blue") +
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), width = 0.2, color = "darkgray") +
   labs(
     title = "Credibility Intervals for Model Coefficients",
     x = "Predictors",
     y = "Estimate (90% CI)"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold")
+  ) +
   coord_flip()
-
 ```
 @fig-modelresults1 reveals that the treatment effect for analytical thinking, bullshit receptivity, and conspiracy belief is statistically significant. Demographic predictors such as education and political ideology also show significant relationships with these psychological measures.
 
-Interpretation and Diagnostics
+### Interpretation and Diagnostics
 The findings confirm the effectiveness of psychological inoculation in enhancing analytical thinking and reducing susceptibility to bullshit receptivity and conspiracy belief. The inclusion of demographic covariates ensures robust estimation of treatment effects, controlling for confounding factors.
 
 Model diagnostics, including trace plots and posterior predictive checks, confirm convergence and good model fit. These diagnostics are available in Appendix @sec-model-details.
 
 
-
-# Discussion
+# Discussion {#sec-discussion}
 
 ## Effects of Psychological Inoculation on Analytical Thinking and Beliefs
 The results of the analysis provide evidence that psychological inoculation interventions significantly enhance analytical thinking and reduce susceptibility to conspiracy beliefs and receptivity to pseudo-profound statements. These findings support the hypothesis that exposing individuals to weakened forms of misinformation (inoculation) primes their cognitive defenses, making them better equipped to discern misinformation. Analytical thinking, in particular, showed a notable positive association with treatment, indicating that participants who received the inoculation intervention exhibited improved critical thinking abilities. This reinforces prior research suggesting that cognitive training methods can effectively mitigate the influence of misleading information.
@@ -512,10 +581,150 @@ The study demonstrates that psychological inoculation is a promising strategy fo
 
 \appendix
 
+# Model details {#sec-model-details}
+
+## Posterior Predictive Checks
+Posterior predictive checks were conducted to evaluate how well the Bayesian model fits the data. In @fig-pp-check, the posterior predictive distribution is compared to the observed data for technique discernment. The close alignment between the distributions suggests that the model captures the key features of the data effectively.
+
+```{r}
+#| label: fig-pp-check
+#| fig-cap: Posterior predictive checks for Bayesian model fit
+#| echo: false
+#| warning: false
+#| message: false
 
 
+model <- stan_glm(
+  formula = technique_discernment ~ treatment + standardized_analytical_thinking + 
+    standardized_conspiracy_belief + standardized_bullshit_receptivity + 
+    gender + education + political_ideology + age_text,
+  data = cleaned_data,
+  family = gaussian(),
+  prior = normal(location = 0, scale = 2.5, autoscale = TRUE),
+  prior_intercept = normal(location = 0, scale = 2.5, autoscale = TRUE),
+  prior_aux = exponential(rate = 1, autoscale = TRUE),
+  seed = 853
+)
+
+pp_check(model, plotfun = "dens_overlay") +
+  labs(title = "Posterior Predictive Check", x = "Technique Discernment", y = "Density") +
+  theme_minimal()
+
+```
+## Markov Chain Monte Carlo Convergence Check
+To assess the convergence of the Markov chain Monte Carlo (MCMC) algorithm used in the Bayesian regression, trace plots were generated for all parameters. These trace plots, shown in @fig-trace-plots, demonstrate horizontal, oscillating patterns with no significant trends, suggesting that the chains have reached stationarity and mixed well.
+
+```{r}
+#| label: fig-trace-plots
+#| fig-cap: "Trace plots for key model parameters"
+#| fig-subcap: ["Intercept", "Treatment: Inoculation", "Standardized Analytical Thinking"]
+#| layout-ncol: 3
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+
+plot(model, "trace", pars = c("(Intercept)", "treatmentInoculation", "standardized_analytical_thinking"))
+
+```
+In addition, the Rhat diagnostic was computed to assess convergence quantitatively. As shown in @fig-rhat, all Rhat values are close to 1, indicating good convergence across all model parameters.
+
+```{r}
+#| label: fig-rhat
+#| fig-cap: "Rhat diagnostic for Bayesian model parameters"
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+
+plot(model, "rhat")
+
+```
+## Multicollinearity Assessment
+Variance Inflation Factor (VIF) values were calculated to detect potential multicollinearity among predictors. All VIF values were below 5, indicating that multicollinearity is not a significant concern in the model. These results are summarized in Table @tbl-vif-values.
+
+```{r}
+#| label: tbl-vif-values
+#| tbl-cap: Variance Inflation Factors (VIF) for Bayesian model predictors
+#| echo: false
+#| warning: false
+#| message: false
+
+# Load the required library
+if (!require("car")) install.packages("car")
+library(car)
+
+# Calculate VIF values for the model
+vif_values <- vif(model)  # Replace 'model' with the actual model object name
 
 
+vif_values %>%
+  as.data.frame() %>%
+  rownames_to_column("Predictor") %>%
+  kable(
+    booktabs = TRUE,
+    caption = "VIF values for Bayesian regression predictors"
+  ) %>%
+  kable_styling(full_width = FALSE, position = "center")
+
+```
+## Credibility Intervals
+The 90% credibility intervals for the model coefficients are visualized in @fig-credibility-intervals. These intervals highlight the uncertainty around the estimated effects for each predictor. Notably, the treatmentInoculation variable has a positive and significant effect, providing evidence for the effectiveness of psychological inoculation interventions.
+
+```{r}
+#| label: fig-credibility-intervals
+#| fig-cap: "Credibility intervals for Bayesian model coefficients"
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+
+posterior_interval %>%
+  mutate(Predictor = factor(Predictor, levels = Predictor[order(Estimate)])) %>%
+  ggplot(aes(x = Predictor, y = Estimate)) +
+  geom_point(size = 3, color = "blue") +
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), width = 0.2, color = "darkgray") +
+  labs(
+    title = "90% Credibility Intervals for Model Coefficients",
+    x = "Predictors",
+    y = "Estimate"
+  ) +
+  theme_minimal() +
+  coord_flip()
+
+```
+
+## Appendix: Full Model Summary
+A full summary of the Bayesian model results, including estimates, standard errors, and credible intervals, is provided in Appendix @tbl-model-summary.
+
+```{r}
+#| label: tbl-model-summary
+#| tbl-cap: Detailed summary of Bayesian regression model
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+
+model_summary %>%
+  dplyr::select(term, estimate, std.error, conf.low, conf.high) %>%
+  dplyr::mutate(
+    term = stringr::str_replace_all(term, "_", " "), # Format terms for readability
+    conf.int = paste0("(", round(conf.low, 2), ", ", round(conf.high, 2), ")")
+  ) %>%
+  dplyr::select(term, estimate, std.error, conf.int) %>%
+  kbl(
+    caption = "Detailed Bayesian regression model summary",
+    col.names = c("Predictor", "Estimate", "Standard Error", "95% CI")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE
+  )
+
+```
+
+## Interpretation and Implications
+The diagnostics and results presented here confirm that the Bayesian model is well-specified, converged, and fits the data appropriately. The findings support the theoretical underpinnings of psychological inoculation and its impact on critical thinking and misinformation resistance.
 \newpage
 
 
