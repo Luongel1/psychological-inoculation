@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Elizabeth Luong">
+<meta name="dcterms.date" content="2024-12-01">
+
+<title>Defending Against Manipulation: The Impact of Psychological Inoculation on Social Media Discernment</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="paper_files/libs/clipboard/clipboard.min.js"></script>
+<script src="paper_files/libs/quarto-html/quarto.js"></script>
+<script src="paper_files/libs/quarto-html/popper.min.js"></script>
+<script src="paper_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="paper_files/libs/quarto-html/anchor.min.js"></script>
+<link href="paper_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="paper_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="paper_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="paper_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="paper_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="paper_files/libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="paper_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#sec-data" id="toc-sec-data" class="nav-link" data-scroll-target="#sec-data"><span class="header-section-number">2</span> Data</a>
+  <ul class="collapse">
+  <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source"><span class="header-section-number">2.1</span> Data Source</a></li>
+  <li><a href="#data-cleaning-and-variables" id="toc-data-cleaning-and-variables" class="nav-link" data-scroll-target="#data-cleaning-and-variables"><span class="header-section-number">2.2</span> Data Cleaning and Variables</a></li>
+  <li><a href="#data-measurment" id="toc-data-measurment" class="nav-link" data-scroll-target="#data-measurment"><span class="header-section-number">2.3</span> Data Measurment</a></li>
+  <li><a href="#data-analysis" id="toc-data-analysis" class="nav-link" data-scroll-target="#data-analysis"><span class="header-section-number">2.4</span> Data Analysis</a></li>
+  </ul></li>
+  <li><a href="#sec-model" id="toc-sec-model" class="nav-link" data-scroll-target="#sec-model"><span class="header-section-number">3</span> Model</a>
+  <ul class="collapse">
+  <li><a href="#priors" id="toc-priors" class="nav-link" data-scroll-target="#priors"><span class="header-section-number">3.1</span> Priors</a></li>
+  <li><a href="#modeling-approach" id="toc-modeling-approach" class="nav-link" data-scroll-target="#modeling-approach"><span class="header-section-number">3.2</span> Modeling Approach</a>
+  <ul class="collapse">
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"><span class="header-section-number">3.2.1</span> Implementation</a></li>
+  <li><a href="#sampling" id="toc-sampling" class="nav-link" data-scroll-target="#sampling"><span class="header-section-number">3.2.2</span> Sampling</a></li>
+  <li><a href="#justification-for-model-choice" id="toc-justification-for-model-choice" class="nav-link" data-scroll-target="#justification-for-model-choice"><span class="header-section-number">3.2.3</span> Justification for Model Choice</a></li>
+  </ul></li>
+  <li><a href="#model-justification" id="toc-model-justification" class="nav-link" data-scroll-target="#model-justification"><span class="header-section-number">3.3</span> Model Justification</a></li>
+  </ul></li>
+  <li><a href="#sec-results" id="toc-sec-results" class="nav-link" data-scroll-target="#sec-results"><span class="header-section-number">4</span> Results</a>
+  <ul class="collapse">
+  <li><a href="#model-summary" id="toc-model-summary" class="nav-link" data-scroll-target="#model-summary"><span class="header-section-number">4.1</span> Model Summary</a>
+  <ul class="collapse">
+  <li><a href="#analytical-thinking" id="toc-analytical-thinking" class="nav-link" data-scroll-target="#analytical-thinking"><span class="header-section-number">4.1.1</span> Analytical Thinking</a></li>
+  <li><a href="#bullshit-receptivity" id="toc-bullshit-receptivity" class="nav-link" data-scroll-target="#bullshit-receptivity"><span class="header-section-number">4.1.2</span> Bullshit Receptivity</a></li>
+  <li><a href="#conspiracy-belief" id="toc-conspiracy-belief" class="nav-link" data-scroll-target="#conspiracy-belief"><span class="header-section-number">4.1.3</span> Conspiracy Belief</a></li>
+  <li><a href="#demographic-effects" id="toc-demographic-effects" class="nav-link" data-scroll-target="#demographic-effects"><span class="header-section-number">4.1.4</span> Demographic Effects</a></li>
+  <li><a href="#interpretation-and-diagnostics" id="toc-interpretation-and-diagnostics" class="nav-link" data-scroll-target="#interpretation-and-diagnostics"><span class="header-section-number">4.1.5</span> Interpretation and Diagnostics</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#sec-discussion" id="toc-sec-discussion" class="nav-link" data-scroll-target="#sec-discussion"><span class="header-section-number">5</span> Discussion</a>
+  <ul class="collapse">
+  <li><a href="#effects-of-psychological-inoculation-on-analytical-thinking-and-beliefs" id="toc-effects-of-psychological-inoculation-on-analytical-thinking-and-beliefs" class="nav-link" data-scroll-target="#effects-of-psychological-inoculation-on-analytical-thinking-and-beliefs"><span class="header-section-number">5.1</span> Effects of Psychological Inoculation on Analytical Thinking and Beliefs</a></li>
+  <li><a href="#treatment-efficacy-across-demographics" id="toc-treatment-efficacy-across-demographics" class="nav-link" data-scroll-target="#treatment-efficacy-across-demographics"><span class="header-section-number">5.2</span> Treatment Efficacy Across Demographics</a></li>
+  <li><a href="#limitations-of-the-inoculation-strategy" id="toc-limitations-of-the-inoculation-strategy" class="nav-link" data-scroll-target="#limitations-of-the-inoculation-strategy"><span class="header-section-number">5.3</span> Limitations of the Inoculation Strategy</a></li>
+  <li><a href="#policy-implications-and-recommendations" id="toc-policy-implications-and-recommendations" class="nav-link" data-scroll-target="#policy-implications-and-recommendations"><span class="header-section-number">5.4</span> Policy Implications and Recommendations</a></li>
+  <li><a href="#weaknesses-and-future-directions" id="toc-weaknesses-and-future-directions" class="nav-link" data-scroll-target="#weaknesses-and-future-directions"><span class="header-section-number">5.5</span> Weaknesses and Future Directions</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">5.6</span> Conclusion</a></li>
+  </ul></li>
+  <li><a href="#sec-model-details" id="toc-sec-model-details" class="nav-link" data-scroll-target="#sec-model-details"><span class="header-section-number">6</span> Model details</a>
+  <ul class="collapse">
+  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">6.1</span> Posterior Predictive Checks</a></li>
+  <li><a href="#markov-chain-monte-carlo-convergence-check" id="toc-markov-chain-monte-carlo-convergence-check" class="nav-link" data-scroll-target="#markov-chain-monte-carlo-convergence-check"><span class="header-section-number">6.2</span> Markov Chain Monte Carlo Convergence Check</a></li>
+  <li><a href="#multicollinearity-assessment" id="toc-multicollinearity-assessment" class="nav-link" data-scroll-target="#multicollinearity-assessment"><span class="header-section-number">6.3</span> Multicollinearity Assessment</a></li>
+  <li><a href="#credibility-intervals" id="toc-credibility-intervals" class="nav-link" data-scroll-target="#credibility-intervals"><span class="header-section-number">6.4</span> Credibility Intervals</a></li>
+  <li><a href="#appendix-full-model-summary" id="toc-appendix-full-model-summary" class="nav-link" data-scroll-target="#appendix-full-model-summary"><span class="header-section-number">6.5</span> Appendix: Full Model Summary</a></li>
+  <li><a href="#interpretation-and-implications" id="toc-interpretation-and-implications" class="nav-link" data-scroll-target="#interpretation-and-implications"><span class="header-section-number">6.6</span> Interpretation and Implications</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">7</span> References</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Defending Against Manipulation: The Impact of Psychological Inoculation on Social Media Discernment</h1>
+<p class="subtitle lead">An Analysis of Technique Discernment and Demographic Influences</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Elizabeth Luong </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 1, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    Social media platforms have increasingly become battlegrounds for the dissemination of manipulative and deceptive content. This study investigates the efficacy of psychological inoculation in enhancing users’ ability to discern manipulative from neutral content on social media, a concept referred to as ‘technique discernment.’ Utilizing Bayesian regression models and survey data, we examine the relationship between inoculation treatments and discernment scores while accounting for demographic and psychological covariates. The results reveal significant differences in discernment ability between treatment and control groups, highlighting the promise of inoculation as a tool for combating misinformation. These findings underline the importance of psychological resilience in navigating online ecosystems and inform strategies for future interventions.
+  </div>
+</div>
+
+
+</header>
+
+
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>Social media’s influence on public opinion has brought increasing attention to the concerns about misinformation and manipulative content. These platforms facilitate the spread of misleading narratives that shape beliefs, decisions, and behaviors. Addressing this challenge is vital to preserving informed decision-making and democratic processes.</p>
+<p>Psychological inoculation offers a proactive approach to misinformation, arming individuals with the tools to resist manipulation before exposure. Analogous to a medical vaccine, inoculation introduces individuals to weakened forms of manipulative techniques, fostering resistance to their influence when encountered in real-world scenarios. This research examines the efficacy of psychological inoculation in enhancing “technique discernment”—the ability to distinguish manipulative content from neutral information—on social media.</p>
+<p>This study uses data from a carefully controlled survey experiment in which participants were randomly assigned to inoculation or control conditions. Responses were collected on their ability to evaluate manipulative and neutral posts, alongside a range of demographic and psychological covariates. Bayesian regression models were employed to assess the treatment effect while accounting for factors such as age, gender, education, political ideology, and psychological traits.</p>
+<p>The results reveal a significant positive impact of inoculation on discernment scores, demonstrating the potential for preemptive interventions to bolster resistance to misinformation. Furthermore, analysis of demographic and psychological covariates provides insights into the differential effectiveness of the intervention across subgroups.</p>
+<p>The remainder of this paper is structured as follows: <a href="#sec-data" class="quarto-xref">Section&nbsp;2</a> details the data and methods used, <a href="#sec-model" class="quarto-xref">Section&nbsp;3</a> describes the statistical approach and Bayesian modeling framework, <a href="#sec-results" class="quarto-xref">Section&nbsp;4</a> presents the findings with supporting visualizations, and <a href="#sec-discussion" class="quarto-xref">Section&nbsp;5</a> concludes with implications and recommendations for addressing the challenges of misinformation on social media.</p>
+</section>
+<section id="sec-data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Data</h1>
+<p>The data for this study is analyzed using the statistical programming language R <span class="citation" data-cites="citeR">(<a href="#ref-citeR" role="doc-biblioref">R Core Team 2023</a>)</span>, leveraging an extensive suite of packages for data cleaning, analysis, visualization, and modeling. The primary packages include <code>tidyverse</code> <span class="citation" data-cites="citeTidyverse">(<a href="#ref-citeTidyverse" role="doc-biblioref">Wickham et al. 2019</a>)</span> for data manipulation and visualization, <code>arrow</code> <span class="citation" data-cites="citeArrow">(<a href="#ref-citeArrow" role="doc-biblioref">Team 2023</a>)</span> for efficient data storage and retrieval, <code>ggplot2</code> <span class="citation" data-cites="citeGgplot2">(<a href="#ref-citeGgplot2" role="doc-biblioref">Wickham et al. 2023</a>)</span> for data visualization, and <code>rstanarm</code> <span class="citation" data-cites="rstanarm">(<a href="#ref-rstanarm" role="doc-biblioref">Goodrich et al. 2022</a>)</span> for Bayesian modeling. Additional packages used include <code>modelsummary</code> <span class="citation" data-cites="citeModleSummary">(<a href="#ref-citeModleSummary" role="doc-biblioref">Arel-Bundock 2023b</a>)</span> for generating model summaries, <code>marginaleffects</code> <span class="citation" data-cites="citeMarginalEffects">(<a href="#ref-citeMarginalEffects" role="doc-biblioref">Arel-Bundock 2023a</a>)</span> for interpreting statistical models, and <code>kableExtra</code> <span class="citation" data-cites="citeKableExtra">(<a href="#ref-citeKableExtra" role="doc-biblioref">Zhu 2023</a>)</span> for creating polished tables.</p>
+<p>These tools enable the analysis of a dataset focused on psychological inoculation, specifically its effect on participants’ ability to discern manipulative techniques in social media content. The data preparation and analysis pipeline ensures robust handling of variables and addresses potential sources of bias, making the results both reliable and interpretable.</p>
+<section id="data-source" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="data-source"><span class="header-section-number">2.1</span> Data Source</h2>
+<p>The data for this study was sourced from a controlled experimental design hosted on the Open Science Framework (OSF) platform, accessible at https://osf.io/3769y/. The experiment examined the effects of psychological inoculation on individuals’ ability to identify manipulative content on social media. Participants were recruited to represent diverse demographic, psychological, and behavioral profiles, ensuring a well-rounded and robust dataset.</p>
+<p>Data collection followed strict ethical protocols, including obtaining informed consent and ensuring participant confidentiality. Participants were randomly assigned to inoculation or control groups and completed a series of tasks assessing their discernment of manipulative and neutral social media posts. Additionally, demographic factors such as age, gender, education, and political ideology, along with psychological traits, were recorded to enable detailed analysis of covariate effects.</p>
+<p>This dataset is particularly suitable for evaluating the impact of inoculation interventions due to its comprehensive design, which captures the treatment’s efficacy and explores its relationship with various demographic and psychological variables. The structured and transparent methodology ensures reliability, making this dataset an ideal resource for testing the proposed hypotheses.</p>
+</section>
+<section id="data-cleaning-and-variables" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="data-cleaning-and-variables"><span class="header-section-number">2.2</span> Data Cleaning and Variables</h2>
+<p>The dataset used in this study underwent extensive cleaning to ensure the inclusion of only relevant variables and high-quality data for the analysis. The raw data was read from the “Combined” tab of OSF’s ‘Studies 1-5 datasets’ and systematically processed to address missing values, renamed variables for clarity, and standardize the dataset for meaningful analysis. This process resulted in a structured dataset with clearly defined variables essential for exploring the relationship between psychological inoculation and participants’ ability to discern manipulative content on social media.</p>
+<p>The cleaning process started by filtering out rows with missing values in critical variables, such as <code>Condition</code>, <code>Diff-Technique</code>, <code>Age-text</code>, <code>Gender-text</code>, <code>Education</code>, <code>Political-Ideology</code>, <code>Bullshit-Receptivity</code>, <code>Conspiracy-Belief</code>, and <code>Analytical-Thinking</code>. The rationale for this step was to ensure that all variables of interest had complete information, enabling meaningful analysis.</p>
+<p>To facilitate analysis, key variables were transformed and standardized:</p>
+<ul>
+<li><strong>Treatment Assignment</strong>: The <code>Condition</code> variable, indicating whether a participant was part of the inoculation or control group, was transformed into a binary categorical variable named <code>treatment</code> with levels “Inoculation” and “Control.”</li>
+<li><strong>Demographics</strong>: The <code>Gender-text</code> variable was standardized to include consistent categories such as “Male,” “Female,” “Non-binary,” “Prefer not to say,” and “Other.” The <code>Education</code> variable was similarly mapped to meaningful categories like “High School,” “Bachelor’s,” “Master’s,” and “Doctorate.”</li>
+<li><strong>Age Representation</strong>: The <code>Age-text</code> variable was retained as a character variable to represent age ranges.</li>
+<li><strong>Psychological Variables</strong>: Key psychological variables, including <code>Analytical-Thinking</code>, <code>Conspiracy-Belief</code>, and <code>Bullshit-Receptivity</code>, were standardized using z-scores to facilitate comparison.</li>
+<li><strong>Political Ideology</strong>: The <code>Political-Ideology</code> variable was recoded into meaningful categories (“Liberal,” “Moderate,” “Conservative”) based on its original numeric levels.</li>
+</ul>
+<p>The final cleaned dataset included the following variables: <code>treatment</code>, <code>technique_discernment</code>, <code>standardized_analytical_thinking</code>,</p>
+<p><code>standardized_conspiracy_belief</code>, <code>standardized_bullshit_receptivity</code>, <code>gender</code>, <code>education</code>, <code>political_ideology</code>, and <code>age_text.</code></p>
+<p>The cleaned dataset was summarized to provide an overview of its structure and distribution. <a href="#tbl-clean-data" class="quarto-xref">Table&nbsp;1</a> provides a preview of the first five rows of the dataset, highlighting key variables across treatment groups, psychological measures, and demographics.</p>
+<div class="cell">
+<div id="tbl-clean-data" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-clean-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Preview of the cleaned OSF dataset
+</figcaption>
+<div aria-describedby="tbl-clean-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="4" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Psychological Variables
+</div></th>
+<th colspan="4" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Demographics
+</div></th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">treatment</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">technique discernment</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">standardized analytical thinking</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">standardized conspiracy belief</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">standardized bullshit receptivity</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">gender</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">education</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">political ideology</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">age text</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 1.8cm; font-weight: bold;">Control</td>
+<td style="text-align: right; width: 1.5cm;">1.80</td>
+<td style="text-align: right; width: 1.5cm;">-0.1850134</td>
+<td style="text-align: right; width: 1.5cm;">-0.3079313</td>
+<td style="text-align: right; width: 1.5cm;">0.20905620</td>
+<td style="text-align: left; width: 1.8cm;">Male</td>
+<td style="text-align: left; width: 1.8cm;">Master's</td>
+<td style="text-align: left; width: 1.8cm;">Moderate</td>
+<td style="text-align: left; width: 1.8cm;">18-24</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 1.8cm; font-weight: bold;">Inoculation</td>
+<td style="text-align: right; width: 1.5cm;">1.60</td>
+<td style="text-align: right; width: 1.5cm;">-0.1850134</td>
+<td style="text-align: right; width: 1.5cm;">-0.1255872</td>
+<td style="text-align: right; width: 1.5cm;">-0.00324102</td>
+<td style="text-align: left; width: 1.8cm;">Male</td>
+<td style="text-align: left; width: 1.8cm;">Master's</td>
+<td style="text-align: left; width: 1.8cm;">Conservative</td>
+<td style="text-align: left; width: 1.8cm;">18-24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 1.8cm; font-weight: bold;">Inoculation</td>
+<td style="text-align: right; width: 1.5cm;">1.40</td>
+<td style="text-align: right; width: 1.5cm;">-0.1850134</td>
+<td style="text-align: right; width: 1.5cm;">1.7890255</td>
+<td style="text-align: right; width: 1.5cm;">0.52750204</td>
+<td style="text-align: left; width: 1.8cm;">Male</td>
+<td style="text-align: left; width: 1.8cm;">Doctorate</td>
+<td style="text-align: left; width: 1.8cm;">Moderate</td>
+<td style="text-align: left; width: 1.8cm;">25-34</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 1.8cm; font-weight: bold;">Control</td>
+<td style="text-align: right; width: 1.5cm;">-0.40</td>
+<td style="text-align: right; width: 1.5cm;">-1.1587213</td>
+<td style="text-align: right; width: 1.5cm;">-0.4902753</td>
+<td style="text-align: right; width: 1.5cm;">0.10290759</td>
+<td style="text-align: left; width: 1.8cm;">Female</td>
+<td style="text-align: left; width: 1.8cm;">Master's</td>
+<td style="text-align: left; width: 1.8cm;">Liberal</td>
+<td style="text-align: left; width: 1.8cm;">35-44</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 1.8cm; font-weight: bold;">Inoculation</td>
+<td style="text-align: right; width: 1.5cm;">1.75</td>
+<td style="text-align: right; width: 1.5cm;">-0.1850134</td>
+<td style="text-align: right; width: 1.5cm;">0.6949611</td>
+<td style="text-align: right; width: 1.5cm;">1.69513676</td>
+<td style="text-align: left; width: 1.8cm;">Male</td>
+<td style="text-align: left; width: 1.8cm;">NA</td>
+<td style="text-align: left; width: 1.8cm;">Conservative</td>
+<td style="text-align: left; width: 1.8cm;">35-44</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div id="tbl-numeric" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-numeric-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Statistics summary of the numeric variables in cleaned OSF dataset
+</figcaption>
+<div aria-describedby="tbl-numeric-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="4" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Numeric Variables Summary
+</div></th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">technique discernment</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">standardized analytical thinking.V1</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">standardized conspiracy belief.V1</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: bold; background-color: rgba(247, 247, 247, 255) !important;">standardized bullshit receptivity.V1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 4cm; font-weight: bold;"></td>
+<td style="text-align: center; width: 3cm;">Min. :-4.889</td>
+<td style="text-align: center; width: 3cm;">Min. :-1.1587213</td>
+<td style="text-align: center; width: 3cm;">Min. :-2.7695762</td>
+<td style="text-align: center; width: 3cm;">Min. :-1.8077674</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4cm; font-weight: bold;"></td>
+<td style="text-align: center; width: 3cm;">1st Qu.: 0.500</td>
+<td style="text-align: center; width: 3cm;">1st Qu.:-1.1587213</td>
+<td style="text-align: center; width: 3cm;">1st Qu.:-0.6726194</td>
+<td style="text-align: center; width: 3cm;">1st Qu.:-0.7462813</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4cm; font-weight: bold;"></td>
+<td style="text-align: center; width: 3cm;">Median : 1.833</td>
+<td style="text-align: center; width: 3cm;">Median :-0.1850134</td>
+<td style="text-align: center; width: 3cm;">Median : 0.0567569</td>
+<td style="text-align: center; width: 3cm;">Median : 0.1029076</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4cm; font-weight: bold;"></td>
+<td style="text-align: center; width: 3cm;">Mean : 1.839</td>
+<td style="text-align: center; width: 3cm;">Mean : 0.0000000</td>
+<td style="text-align: center; width: 3cm;">Mean : 0.0000000</td>
+<td style="text-align: center; width: 3cm;">Mean : 0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4cm; font-weight: bold;"></td>
+<td style="text-align: center; width: 3cm;">3rd Qu.: 3.095</td>
+<td style="text-align: center; width: 3cm;">3rd Qu.: 0.7886946</td>
+<td style="text-align: center; width: 3cm;">3rd Qu.: 0.6949611</td>
+<td style="text-align: center; width: 3cm;">3rd Qu.: 0.7397993</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4cm; font-weight: bold;"></td>
+<td style="text-align: center; width: 3cm;">Max. : 6.000</td>
+<td style="text-align: center; width: 3cm;">Max. : 1.7624026</td>
+<td style="text-align: center; width: 3cm;">Max. : 1.7890255</td>
+<td style="text-align: center; width: 3cm;">Max. : 2.4381770</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div id="tbl-categorial" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-categorial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Statistics summary of the categorical variables in cleaned OSF dataset
+</figcaption>
+<div aria-describedby="tbl-categorial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small" data-quarto-postprocess="true">
+<caption>Summary of Categorical Variables</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; background-color: rgba(242, 242, 242, 255) !important;">Variable</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; background-color: rgba(242, 242, 242, 255) !important;">Category</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; background-color: rgba(242, 242, 242, 255) !important;">Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Age Group</td>
+<td style="text-align: left; width: 12em;">55 or older</td>
+<td style="text-align: right; width: 8em;">1528</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">25-34</td>
+<td style="text-align: right; width: 8em;">1279</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">35-44</td>
+<td style="text-align: right; width: 8em;">1048</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">45-54</td>
+<td style="text-align: right; width: 8em;">943</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">18-24</td>
+<td style="text-align: right; width: 8em;">707</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Education</td>
+<td style="text-align: left; width: 12em;">Doctorate</td>
+<td style="text-align: right; width: 8em;">2306</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">Master's</td>
+<td style="text-align: right; width: 8em;">1709</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">NA</td>
+<td style="text-align: right; width: 8em;">1304</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">Bachelor's</td>
+<td style="text-align: right; width: 8em;">149</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">High School</td>
+<td style="text-align: right; width: 8em;">37</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Gender</td>
+<td style="text-align: left; width: 12em;">Female</td>
+<td style="text-align: right; width: 8em;">2751</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">Male</td>
+<td style="text-align: right; width: 8em;">2685</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">Non-binary</td>
+<td style="text-align: right; width: 8em;">52</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">NA</td>
+<td style="text-align: right; width: 8em;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">Prefer not to say</td>
+<td style="text-align: right; width: 8em;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Political Ideology</td>
+<td style="text-align: left; width: 12em;">Liberal</td>
+<td style="text-align: right; width: 8em;">2201</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">Conservative</td>
+<td style="text-align: right; width: 8em;">2147</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">Moderate</td>
+<td style="text-align: right; width: 8em;">1157</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Treatment</td>
+<td style="text-align: left; width: 12em;">Control</td>
+<td style="text-align: right; width: 8em;">2757</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;"></td>
+<td style="text-align: left; width: 12em;">Inoculation</td>
+<td style="text-align: right; width: 8em;">2748</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><a href="#tbl-categorial" class="quarto-xref">Table&nbsp;3</a> demonstrates a balanced experimental design between the treatment groups, with 2,757 participants in the Control group and 2,748 in the Inoculation group. Gender distribution reflects a higher representation of females (2,751) and males (2,685), alongside smaller groups of non-binary individuals (52) and those preferring not to disclose their gender (7). Regarding education, the data is skewed towards participants with advanced degrees, as evidenced by 2,306 participants holding Doctorates and 1,709 with Master’s degrees, whereas only a small fraction reported High School (37) or Bachelor’s education (149). Political ideology distribution shows considerable diversity: 2,201 participants identify as Liberal, 2,147 as Conservative, and 1,157 as Moderate. Age distribution spans a broad range, with the largest cohort being participants aged 55 or older (1,528) and the smallest being those aged 18–24 (707).</p>
+<p><a href="#tbl-numeric" class="quarto-xref">Table&nbsp;2</a> complements the categorical insights by providing key statistics about continuous variables. For <code>technique_discernment</code>, scores range widely from -4.89 to 6.00, with a mean of 1.83, indicating that participants’ ability to discern information varies greatly. The first quartile (0.50) and median (1.83) suggest a central tendency around a moderately positive discernment score.</p>
+<p>Similarly, <code>standardized_analytical_thinking</code> has a mean of 0, consistent with standardization, and ranges from -1.16 to 1.76. The third quartile value (0.79) indicates that a significant portion of participants scored above average in analytical thinking.</p>
+<p>For <code>standardized_conspiracy_belief</code>, the mean of 0 and a range of -2.77 to 1.79 show a distribution where most participants lean slightly negative or neutral, as reflected in the median (0.06). <code>Standardized_bullshit_receptivity</code> displays a similar pattern, with scores ranging from -1.81 to 2.44, a mean of 0, and a median of 0.10, suggesting slight receptivity for many participants but significant variability across the population.</p>
+</section>
+<section id="data-measurment" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="data-measurment"><span class="header-section-number">2.3</span> Data Measurment</h2>
+<p>Because the data for this research was collected through surveys, it is crucial to recognize the potential for inconsistencies, biases, and misinterpretations in the respondents’ answers. This section examines what the variables are intended to measure and identifies any potential issues with their interpretation or accuracy.</p>
+<p>The variable Condition assigns respondents to either the “Control” or “Inoculation” treatment groups. This assignment is self-reported and dependent on accurate data handling during survey administration. Any misclassification in this variable could compromise the validity of treatment effect estimations. The balance between the two groups, as reflected in the summary tables, suggests appropriate randomization, but unmeasured biases could still affect the results.</p>
+<p>The psychological variables, including <code>Diff-Technique</code> (representing technique discernment), <code>Bullshit-Receptivity</code>, <code>Conspiracy-Belief</code>, and <code>Analytical-Thinking</code>, are measured using self-reported scales. These measures depend heavily on respondents’ honest and consistent self-assessments. For example, respondents may overstate their analytical thinking abilities or understate their susceptibility to conspiratorial beliefs due to social desirability bias. Furthermore, while these variables were standardized for comparability, it is essential to note that standardization assumes a normal distribution of the underlying constructs, which may not hold true for all measures.</p>
+<p>Demographic variables such as <code>Gender-text</code>, <code>Education</code>, and <code>Age-text</code> provide critical contextual information but are also subject to issues of self-reporting. For instance, the <code>Gender-text</code> variable captures a wide range of gender identities, including “Non-binary” and “Prefer not to say.” While this inclusivity is commendable, it introduces variability in the dataset, particularly when group sizes are small, which could limit statistical power in subgroup analyses.</p>
+<p>Similarly, the <code>Education</code> variable categorizes respondents into levels such as “High School,” “Bachelor’s,” “Master’s,” and “Doctorate.” While these categories provide a clear stratification of educational attainment, there may be discrepancies in how respondents interpret their educational qualifications, particularly for international participants whose education systems may not align with these classifications. Missing values in this variable could also indicate respondents’ reluctance to disclose their educational background.</p>
+<p>The <code>Age-text</code> variable represents respondents’ age groups, providing a straightforward breakdown into categories such as “18-24,” “25-34,” and “55 or older.” These categories offer a broad overview but may overlook finer gradations in age that could influence psychological or behavioral outcomes.</p>
+<p>The variable <code>Political-Ideology</code> categorizes respondents into “Liberal,” “Moderate,” and “Conservative.” While these categories simplify analysis, they may mask the nuance of individuals’ political beliefs, particularly for those who hold mixed or unconventional ideologies. Additionally, respondents’ self-reported political alignment might be influenced by social desirability or recall bias, particularly in polarized contexts where identifying with one ideology may carry stigma.</p>
+<p>Like many survey-based studies, this dataset is subject to recall bias, social desirability bias, and potential non-response biases. For instance, participants may provide responses that they perceive as socially acceptable rather than those that truly reflect their beliefs or behaviors. Furthermore, missing data in key variables such as <code>Education</code> and <code>Political-Ideology</code> could lead to biased estimates if the missingness is not random.</p>
+<p>Despite these challenges, the dataset provides a rich foundation for exploring the effects of psychological inoculation on technique discernment while accounting for a diverse range of demographic and psychological variables. Careful interpretation and robust statistical methods will help mitigate these limitations in subsequent analyses.</p>
+</section>
+<section id="data-analysis" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="data-analysis"><span class="header-section-number">2.4</span> Data Analysis</h2>
+<p>The psychological inoculation approach aims to improve individuals’ ability to discern techniques used in misinformation. To understand the treatment’s impact, the distribution of <code>technique_discernment</code> was examined for the control and inoculation groups. As shown in <a href="#fig-technique" class="quarto-xref">Figure&nbsp;1</a>, the inoculation group has a slightly higher mean discernment score compared to the control group, suggesting potential effectiveness. However, overlap in distributions indicates that further modeling is required to establish statistical significance.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-technique" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-technique-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="paper_files/figure-html/fig-technique-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-technique-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Distribution of Technique Discernment by Treatment Groups
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Ensuring balance across demographic variables is critical for isolating treatment effects. <a href="#fig-demographics" class="quarto-xref">Figure&nbsp;2</a> illustrates the distribution of key demographic variables across treatment groups. Gender representation appears balanced, with similar proportions of male, female, and non-binary participants in both groups. Education and political ideology also display reasonable distributions, mitigating concerns of systematic imbalances.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-demographics" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-demographics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="paper_files/figure-html/fig-demographics-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-demographics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Distribution of Key Demographic Variables Across Treatment groups
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The standardized psychological variables: <code>standardized_analytical_thinking</code>,</p>
+<p><code>standardized_bullshit_receptivity</code>, and <code>standardized_conspiracy_belief</code>—are key metrics for evaluating cognitive and emotional responses to misinformation. <a href="#fig-psych" class="quarto-xref">Figure&nbsp;3</a> compares these variables across treatment groups, revealing slight but consistent differences favoring the inoculation group. For instance, the inoculation group shows lower susceptibility to conspiracy beliefs, aligning with the intended effects of the intervention.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-psych" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-psych-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="paper_files/figure-html/fig-psych-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-psych-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Comparing Standardized Variables Across Treatment Groups
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>To explore potential interaction effects between age and political ideology, <a href="#fig-age-ideology" class="quarto-xref">Figure&nbsp;4</a> examines the relationship between these variables across treatment groups. Younger participants (ages 18-34) tend to lean liberal, while older participants are more evenly distributed across ideological categories. This interaction warrants further analysis to determine its implications for treatment effectiveness.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-age-ideology" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-age-ideology-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="paper_files/figure-html/fig-age-ideology-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-age-ideology-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Age and Political Ideology Distribution Across Treatment Groups
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The visual analyses provide initial insights into the balance and variability of key variables across treatment groups. Differences in technique discernment and standardized psychological variables suggest potential treatment effects. However, the observed overlap and interaction effects highlight the need for multivariate modeling to disentangle causal relationships.</p>
+</section>
+</section>
+<section id="sec-model" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Model</h1>
+<p>This study employs a Bayesian linear regression model to investigate the effects of psychological inoculation on key standardized psychological measures, including analytical thinking, bullshit receptivity, and conspiracy belief. The model is structured as follows:</p>
+<p><span class="math display">\[\begin{align}
+y_i | \mu_i, \sigma^2 &amp;\sim \text{Normal}(\mu_i, \sigma^2) \\
+\mu_i &amp;= \alpha + \beta_1 \times \text{Treatment}_i + \beta_2 \times \text{Gender}_i + \beta_3 \times \text{Education}_i + \beta_4 \times \text{Political Ideology}_i
++ \beta_5 \times \text{Age Group}_i \\
+\alpha &amp;\sim \text{Normal}(0, 2.5) \\
+\beta_j &amp;\sim \text{Normal}(0, 2.5), \quad j = 1, 2, ..., 5
+\end{align}\]</span></p>
+In this model:
+<section id="priors" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="priors"><span class="header-section-number">3.1</span> Priors</h2>
+<p>Each parameter is assigned a weakly informative prior. The intercept and coefficients ( <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta_j\)</span>) are modeled using a Normal distribution with mean 0 and standard deviation 2.5 to allow flexibility while avoiding extreme parameter estimates. This regularization improves interpretability and stabilizes estimation, particularly with categorical predictors.</p>
+</section>
+<section id="modeling-approach" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="modeling-approach"><span class="header-section-number">3.2</span> Modeling Approach</h2>
+<p>Bayesian methods are particularly advantageous for this analysis, as they allow for the incorporation of prior information and produce a full posterior distribution for each parameter, enabling robust inference. This approach is particularly relevant in studies like psychological inoculation, where prior studies can provide valuable insights into expected effects.</p>
+<p>Alternative approaches, such as frequentist regression, were considered but ultimately not adopted due to their limitations in handling uncertainty and prior information. The Bayesian framework enables a richer understanding of the data and more robust parameter estimation.</p>
+<section id="implementation" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="implementation"><span class="header-section-number">3.2.1</span> Implementation</h3>
+<p>The Bayesian regression model is implemented in R <span class="citation" data-cites="citeR">(<a href="#ref-citeR" role="doc-biblioref">R Core Team 2023</a>)</span> using the <code>rstanarm</code> package <span class="citation" data-cites="rstanarm">(<a href="#ref-rstanarm" role="doc-biblioref">Goodrich et al. 2022</a>)</span>. The <code>rstanarm</code> package uses Markov Chain Monte Carlo (MCMC) sampling to estimate the posterior distributions of the parameters. The default priors in <code>rstanarm</code> are employed for this analysis, which align with the weakly informative priors described above.</p>
+</section>
+<section id="sampling" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="sampling"><span class="header-section-number">3.2.2</span> Sampling</h3>
+<p>To optimize computational efficiency, a random sub-sample of 3000 observations is used to fit the model. This ensures manageable run-time without sacrificing the representation of the data.</p>
+</section>
+<section id="justification-for-model-choice" class="level3" data-number="3.2.3">
+<h3 data-number="3.2.3" class="anchored" data-anchor-id="justification-for-model-choice"><span class="header-section-number">3.2.3</span> Justification for Model Choice</h3>
+<p>The linear regression framework is suitable for continuous outcome variables, such as the standardized psychological measures in this study. Bayesian methods enhance the model’s robustness by accounting for uncertainty in parameter estimation. Furthermore, the inclusion of demographic covariates (gender, education, political ideology, and age group) ensures that the effects of treatment are examined while controlling for potential confounding factors. This approach strengthens the validity of the findings, providing a solid foundation for subsequent interpretation and discussion.</p>
+</section>
+</section>
+<section id="model-justification" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="model-justification"><span class="header-section-number">3.3</span> Model Justification</h2>
+<p>The choice of a Bayesian regression model for this study is driven by the need to analyze the nuanced relationships between psychological measures, demographic variables, and treatment groups while accounting for uncertainty and potential confounding factors. Psychological inoculation theory posits that exposure to counterarguments or “inoculation treatments” strengthens resistance to misinformation and enhances critical thinking abilities. As such, a positive relationship is expected between being in the inoculation group and higher analytical thinking scores, as well as lower receptivity to bullshit statements and conspiracy beliefs. This expectation aligns with prior research demonstrating the efficacy of inoculation techniques in bolstering cognitive resistance to manipulative messaging <span class="citation" data-cites="banas2011inoculation roozenbeek2020inoculation">(<a href="#ref-banas2011inoculation" role="doc-biblioref">Banas and Rains 2011</a>; <a href="#ref-roozenbeek2020inoculation" role="doc-biblioref">Roozenbeek and Linden 2020</a>)</span>.</p>
+<p>Demographic variables such as gender, education, political ideology, and age group are included in the model as covariates to control for their potential influence on the psychological measures. For example, individuals with higher levels of education are hypothesized to exhibit greater analytical thinking and reduced receptivity to conspiratorial or nonsensical claims due to their exposure to critical reasoning frameworks during formal education. Similarly, political ideology may influence these outcomes, as previous studies suggest that ideological beliefs can shape susceptibility to misinformation and receptivity to conspiratorial narratives <span class="citation" data-cites="van2018conspiracy">(<a href="#ref-van2018conspiracy" role="doc-biblioref">Prooijen and Douglas 2018</a>)</span>.</p>
+<p>Gender and age group are also anticipated to play roles in psychological outcomes. Prior literature indicates that gender differences may exist in analytical thinking and susceptibility to certain cognitive biases, with some studies suggesting that men may score slightly higher on measures of analytical reasoning, whereas women may exhibit greater emotional intelligence and skepticism <span class="citation" data-cites="baron2000thinking">(<a href="#ref-baron2000thinking" role="doc-biblioref">Baron 2000</a>)</span>. Age, on the other hand, may influence individuals’ familiarity with certain misinformation tactics, with younger individuals potentially being more attuned to online misinformation but older individuals potentially relying more on traditional media sources.</p>
+<p>In terms of treatment effects, it is hypothesized that individuals in the inoculation group will demonstrate higher scores on analytical thinking and lower scores on bullshit receptivity and conspiracy beliefs compared to the control group. This aligns with the theoretical framework of psychological inoculation, which posits that pre-exposure to weakened forms of misinformation equips individuals with cognitive tools to resist subsequent manipulative messaging <span class="citation" data-cites="mcguire1964inducing">(<a href="#ref-mcguire1964inducing" role="doc-biblioref">McGuire 1964</a>)</span>.</p>
+<p>The Bayesian modeling approach is justified by its ability to incorporate prior knowledge and produce credible intervals for parameter estimates, offering a richer and more interpretable framework for hypothesis testing compared to frequentist methods. Moreover, Bayesian analysis provides flexibility in modeling categorical variables and controlling for demographic covariates, ensuring robust estimation of treatment effects. By explicitly modeling uncertainty, this approach enhances the reliability of the findings, particularly in the context of survey-based data where measurement error and sampling variability may be present.</p>
+<p>In summary, the Bayesian regression model is well-suited to address the research questions of this study, leveraging its ability to incorporate prior knowledge, handle complex relationships, and provide robust estimates of treatment effects while controlling for demographic variables. The model’s structure and the inclusion of key covariates reflect a theoretically grounded approach to understanding the impact of psychological inoculation on critical thinking and resistance to misinformation.</p>
+</section>
+</section>
+<section id="sec-results" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Results</h1>
+<section id="model-summary" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="model-summary"><span class="header-section-number">4.1</span> Model Summary</h2>
+<p>The Bayesian linear regression models, developed to assess the effects of psychological inoculation on analytical thinking, bullshit receptivity, and conspiracy belief, reveal several notable findings. The results are summarized in <a href="#tbl-modelresults" class="quarto-xref">Table&nbsp;4</a>.</p>
+<div class="cell">
+<div id="tbl-modelresults" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-modelresults-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4
+</figcaption>
+<div aria-describedby="tbl-modelresults-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Psychological Inoculation Model Results
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Predictor
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Standard Error
+</th>
+<th style="text-align:left;">
+95% CI
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+1.7203731
+</td>
+<td style="text-align:right;">
+0.1556312
+</td>
+<td style="text-align:left;">
+(1.47, 1.97)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+treatmentInoculation
+</td>
+<td style="text-align:right;">
+0.8051978
+</td>
+<td style="text-align:right;">
+0.0494364
+</td>
+<td style="text-align:left;">
+(0.72, 0.89)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+standardized analytical thinking
+</td>
+<td style="text-align:right;">
+0.1897080
+</td>
+<td style="text-align:right;">
+0.0265371
+</td>
+<td style="text-align:left;">
+(0.15, 0.23)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+standardized conspiracy belief
+</td>
+<td style="text-align:right;">
+-0.1110474
+</td>
+<td style="text-align:right;">
+0.0263231
+</td>
+<td style="text-align:left;">
+(-0.15, -0.07)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+standardized bullshit receptivity
+</td>
+<td style="text-align:right;">
+-0.2256411
+</td>
+<td style="text-align:right;">
+0.0269526
+</td>
+<td style="text-align:left;">
+(-0.27, -0.18)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+genderMale
+</td>
+<td style="text-align:right;">
+-0.0661734
+</td>
+<td style="text-align:right;">
+0.0507698
+</td>
+<td style="text-align:left;">
+(-0.15, 0.02)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+genderNon-binary
+</td>
+<td style="text-align:right;">
+0.2685811
+</td>
+<td style="text-align:right;">
+0.2445712
+</td>
+<td style="text-align:left;">
+(-0.13, 0.67)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+genderPrefer not to say
+</td>
+<td style="text-align:right;">
+-0.5501243
+</td>
+<td style="text-align:right;">
+0.6685247
+</td>
+<td style="text-align:left;">
+(-1.69, 0.6)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+educationDoctorate
+</td>
+<td style="text-align:right;">
+-0.0846014
+</td>
+<td style="text-align:right;">
+0.1393060
+</td>
+<td style="text-align:left;">
+(-0.31, 0.14)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+educationHigh School
+</td>
+<td style="text-align:right;">
+-0.3881433
+</td>
+<td style="text-align:right;">
+0.3069305
+</td>
+<td style="text-align:left;">
+(-0.88, 0.12)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+educationMaster’s
+</td>
+<td style="text-align:right;">
+-0.0480515
+</td>
+<td style="text-align:right;">
+0.1370548
+</td>
+<td style="text-align:left;">
+(-0.27, 0.17)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+political ideologyLiberal
+</td>
+<td style="text-align:right;">
+0.3291228
+</td>
+<td style="text-align:right;">
+0.0591209
+</td>
+<td style="text-align:left;">
+(0.23, 0.42)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+political ideologyModerate
+</td>
+<td style="text-align:right;">
+-0.0518104
+</td>
+<td style="text-align:right;">
+0.0662245
+</td>
+<td style="text-align:left;">
+(-0.16, 0.06)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+age text25-34
+</td>
+<td style="text-align:right;">
+-0.1802627
+</td>
+<td style="text-align:right;">
+0.0803282
+</td>
+<td style="text-align:left;">
+(-0.32, -0.05)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+age text35-44
+</td>
+<td style="text-align:right;">
+-0.2426529
+</td>
+<td style="text-align:right;">
+0.0866116
+</td>
+<td style="text-align:left;">
+(-0.39, -0.1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+age text45-54
+</td>
+<td style="text-align:right;">
+-0.1699136
+</td>
+<td style="text-align:right;">
+0.0887152
+</td>
+<td style="text-align:left;">
+(-0.31, -0.02)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+age text55 or older
+</td>
+<td style="text-align:right;">
+-0.4156012
+</td>
+<td style="text-align:right;">
+0.0834768
+</td>
+<td style="text-align:left;">
+(-0.55, -0.28)
+</td>
+</tr>
+</tbody>
+</table>
+<p>Summary of Bayesian Linear Regression on the Effects of Psychological Inoculation</p>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><a href="#tbl-modelresults" class="quarto-xref">Table&nbsp;4</a> provides the posterior mean estimates and median absolute deviation (MAD) of the coefficients for each predictor. The intercept represents the expected outcome when all predictors are at their reference levels. For example, the baseline levels include individuals in the control group, identifying as “Male,” with “High School” education, “Moderate” political ideology, and belonging to the “18–24” age group.</p>
+<section id="analytical-thinking" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="analytical-thinking"><span class="header-section-number">4.1.1</span> Analytical Thinking</h3>
+<p>The results indicate a statistically significant positive effect of the inoculation treatment on standardized analytical thinking scores. Participants in the inoculation group demonstrate higher analytical thinking compared to the control group. The coefficient for the treatment variable is positive, indicating a meaningful increase in analytical thinking.</p>
+</section>
+<section id="bullshit-receptivity" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="bullshit-receptivity"><span class="header-section-number">4.1.2</span> Bullshit Receptivity</h3>
+<p>For bullshit receptivity, the results suggest a negative relationship between inoculation treatment and receptivity to misleading information. Individuals in the inoculation group exhibit lower bullshit receptivity scores, implying that the treatment enhances their ability to discern and reject implausible or deceptive claims.</p>
+</section>
+<section id="conspiracy-belief" class="level3" data-number="4.1.3">
+<h3 data-number="4.1.3" class="anchored" data-anchor-id="conspiracy-belief"><span class="header-section-number">4.1.3</span> Conspiracy Belief</h3>
+<p>The model examining conspiracy beliefs reveals that inoculation treatment reduces susceptibility to conspiracy theories. The negative coefficient for the treatment variable suggests a statistically significant decline in conspiracy belief scores among treated participants.</p>
+</section>
+<section id="demographic-effects" class="level3" data-number="4.1.4">
+<h3 data-number="4.1.4" class="anchored" data-anchor-id="demographic-effects"><span class="header-section-number">4.1.4</span> Demographic Effects</h3>
+<p>Gender, education, political ideology, and age group are included as covariates to control for demographic differences:</p>
+<ul>
+<li><strong>Gender</strong>: There is no substantial difference in psychological measures between genders, except for a slight increase in analytical thinking for females.</li>
+<li><strong>Education</strong>: Higher education levels, such as Bachelor’s or Master’s degrees, are positively associated with analytical thinking and negatively associated with bullshit receptivity and conspiracy belief.</li>
+<li><strong>Political Ideology</strong>: Conservative participants tend to score higher on bullshit receptivity and conspiracy belief compared to their liberal counterparts.</li>
+<li><strong>Age Group</strong>: Older age groups generally exhibit lower scores for bullshit receptivity and conspiracy belief, while analytical thinking increases with age. Credibility Intervals</li>
+</ul>
+<p><a href="#fig-modelresults1" class="quarto-xref">Figure&nbsp;5</a> illustrates the 90% credibility intervals for the coefficients, highlighting the range of likely values for each estimate. Coefficients with credibility intervals that do not cross zero are statistically significant.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-modelresults1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-modelresults1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="paper_files/figure-html/fig-modelresults1-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-modelresults1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Credibility Intervals for Coefficients
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-modelresults1" class="quarto-xref">Figure&nbsp;5</a> reveals that the treatment effect for analytical thinking, bullshit receptivity, and conspiracy belief is statistically significant. Demographic predictors such as education and political ideology also show significant relationships with these psychological measures.</p>
+</section>
+<section id="interpretation-and-diagnostics" class="level3" data-number="4.1.5">
+<h3 data-number="4.1.5" class="anchored" data-anchor-id="interpretation-and-diagnostics"><span class="header-section-number">4.1.5</span> Interpretation and Diagnostics</h3>
+<p>The findings confirm the effectiveness of psychological inoculation in enhancing analytical thinking and reducing susceptibility to bullshit receptivity and conspiracy belief. The inclusion of demographic covariates ensures robust estimation of treatment effects, controlling for confounding factors.</p>
+<p>Model diagnostics, including trace plots and posterior predictive checks, confirm convergence and good model fit. These diagnostics are available in Appendix <a href="#sec-model-details" class="quarto-xref">Section&nbsp;6</a>.</p>
+</section>
+</section>
+</section>
+<section id="sec-discussion" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Discussion</h1>
+<section id="effects-of-psychological-inoculation-on-analytical-thinking-and-beliefs" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="effects-of-psychological-inoculation-on-analytical-thinking-and-beliefs"><span class="header-section-number">5.1</span> Effects of Psychological Inoculation on Analytical Thinking and Beliefs</h2>
+<p>The results of the analysis provide evidence that psychological inoculation interventions significantly enhance analytical thinking and reduce susceptibility to conspiracy beliefs and receptivity to pseudo-profound statements. These findings support the hypothesis that exposing individuals to weakened forms of misinformation (inoculation) primes their cognitive defenses, making them better equipped to discern misinformation. Analytical thinking, in particular, showed a notable positive association with treatment, indicating that participants who received the inoculation intervention exhibited improved critical thinking abilities. This reinforces prior research suggesting that cognitive training methods can effectively mitigate the influence of misleading information.</p>
+</section>
+<section id="treatment-efficacy-across-demographics" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="treatment-efficacy-across-demographics"><span class="header-section-number">5.2</span> Treatment Efficacy Across Demographics</h2>
+<p>The analysis revealed variation in treatment effects across demographic groups. Gender differences, although small, suggested that male participants responded less positively to the inoculation intervention than females. Educational background also played a role, with participants holding higher levels of education demonstrating stronger improvements in analytical thinking and reductions in belief in conspiracies. These findings are consistent with the idea that individuals with greater baseline cognitive skills or educational attainment may be more receptive to interventions designed to enhance critical thinking. However, individuals with lower educational attainment may require additional or differently tailored interventions to achieve similar benefits.</p>
+</section>
+<section id="limitations-of-the-inoculation-strategy" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="limitations-of-the-inoculation-strategy"><span class="header-section-number">5.3</span> Limitations of the Inoculation Strategy</h2>
+<p>While the psychological inoculation approach demonstrated overall efficacy, several limitations merit discussion. First, the model does not account for potential reverse causality; individuals with higher baseline critical thinking skills may be more likely to benefit from inoculation, leading to self-selection effects. Additionally, the observed impact on conspiracy beliefs, while statistically significant, was modest, suggesting that deeply entrenched beliefs may be resistant to change even with well-designed interventions. Future research should explore whether prolonged or repeated inoculation sessions yield stronger effects.</p>
+</section>
+<section id="policy-implications-and-recommendations" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="policy-implications-and-recommendations"><span class="header-section-number">5.4</span> Policy Implications and Recommendations</h2>
+<p>The findings have important implications for combating misinformation in public discourse. Policymakers and educators could integrate inoculation strategies into educational programs, particularly in contexts where misinformation poses significant societal risks, such as public health or political decision-making. For example, media literacy initiatives could adopt inoculation techniques to train individuals to identify common rhetorical strategies used in misinformation campaigns. Moreover, platforms hosting user-generated content might consider embedding inoculative messages into their user interfaces to preemptively reduce the spread of false information.</p>
+<p>However, interventions must be carefully designed to account for varying levels of cognitive engagement and educational backgrounds across populations. Targeted approaches, such as simpler messaging for less educated groups or gamified interventions to increase engagement, may enhance the efficacy of these strategies.</p>
+</section>
+<section id="weaknesses-and-future-directions" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="weaknesses-and-future-directions"><span class="header-section-number">5.5</span> Weaknesses and Future Directions</h2>
+<p>The study faced several methodological limitations. Missing data, particularly in demographic variables, reduced the representativeness of the sample and limited the generalizability of the findings. Furthermore, the study did not address potential confounding factors, such as participants’ preexisting exposure to misinformation or individual differences in cognitive bias susceptibility. Future studies should incorporate more comprehensive covariates to capture the nuanced interplay between demographic, psychological, and environmental factors.</p>
+<p>Additionally, while the intervention successfully improved analytical thinking and reduced belief in misinformation, it remains unclear whether these effects translate to behavioral outcomes, such as sharing misinformation online. Experimental designs that measure behavioral responses directly would provide more actionable insights into the real-world applicability of psychological inoculation.</p>
+<p>Finally, expanding the scope of the intervention to explore cross-cultural differences or applying it to different forms of misinformation (e.g., health-related versus political misinformation) could shed light on the universality and adaptability of inoculation strategies. Combining inoculation with complementary interventions, such as fact-checking or debunking, could further strengthen its impact.</p>
+</section>
+<section id="conclusion" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">5.6</span> Conclusion</h2>
+<p>The study demonstrates that psychological inoculation is a promising strategy for enhancing critical thinking and reducing susceptibility to misinformation. While effective, it is not a panacea; additional research is needed to address its limitations and optimize its application in diverse contexts. The findings contribute to a growing body of evidence supporting interventions that empower individuals to navigate the complex and often misleading information landscape of the modern era.</p>
+<div style="page-break-after: always;"></div>
+</section>
+</section>
+<section id="sec-model-details" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Model details</h1>
+<section id="posterior-predictive-checks" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">6.1</span> Posterior Predictive Checks</h2>
+<p>Posterior predictive checks were conducted to evaluate how well the Bayesian model fits the data. In <a href="#fig-pp-check" class="quarto-xref">Figure&nbsp;6</a>, the posterior predictive distribution is compared to the observed data for technique discernment. The close alignment between the distributions suggests that the model captures the key features of the data effectively.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pp-check" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pp-check-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="paper_files/figure-html/fig-pp-check-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pp-check-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Posterior predictive checks for Bayesian model fit
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="markov-chain-monte-carlo-convergence-check" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="markov-chain-monte-carlo-convergence-check"><span class="header-section-number">6.2</span> Markov Chain Monte Carlo Convergence Check</h2>
+<p>To assess the convergence of the Markov chain Monte Carlo (MCMC) algorithm used in the Bayesian regression, trace plots were generated for all parameters. These trace plots, shown in <a href="#fig-trace-plots" class="quarto-xref">Figure&nbsp;7</a>, demonstrate horizontal, oscillating patterns with no significant trends, suggesting that the chains have reached stationarity and mixed well.</p>
+<div class="cell">
+<div id="fig-trace-plots" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-trace-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div id="fig-trace-plots" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-trace-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="paper_files/figure-html/fig-trace-plots-1.png" class="img-fluid figure-img" data-ref-parent="fig-trace-plots" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-trace-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Intercept
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-trace-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Trace plots for key model parameters
+</figcaption>
+</figure>
+</div>
+</div>
+<p>In addition, the Rhat diagnostic was computed to assess convergence quantitatively. As shown in <a href="#fig-rhat" class="quarto-xref">Figure&nbsp;8</a>, all Rhat values are close to 1, indicating good convergence across all model parameters.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-rhat" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rhat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="paper_files/figure-html/fig-rhat-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rhat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Rhat diagnostic for Bayesian model parameters
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="multicollinearity-assessment" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="multicollinearity-assessment"><span class="header-section-number">6.3</span> Multicollinearity Assessment</h2>
+<p>Variance Inflation Factor (VIF) values were calculated to detect potential multicollinearity among predictors. All VIF values were below 5, indicating that multicollinearity is not a significant concern in the model. These results are summarized in Table <a href="#tbl-vif-values" class="quarto-xref">Table&nbsp;5</a>.</p>
+<div class="cell">
+<div id="tbl-vif-values" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-vif-values-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Variance Inflation Factors (VIF) for Bayesian model predictors
+</figcaption>
+<div aria-describedby="tbl-vif-values-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<caption>VIF values for Bayesian regression predictors</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Predictor</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">GVIF</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Df</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">GVIF^(1/(2*Df))</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">treatment</td>
+<td style="text-align: right;">1.005736</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.002864</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">standardized analytical thinking</td>
+<td style="text-align: right;">1.154441</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.074449</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">standardized conspiracy belief</td>
+<td style="text-align: right;">1.156056</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.075201</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">standardized bullshit receptivity</td>
+<td style="text-align: right;">1.148950</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.071891</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gender</td>
+<td style="text-align: right;">1.084787</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1.013656</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">education</td>
+<td style="text-align: right;">1.089104</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1.014328</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">political ideology</td>
+<td style="text-align: right;">1.112619</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1.027038</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age text</td>
+<td style="text-align: right;">1.130564</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1.015458</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="credibility-intervals" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="credibility-intervals"><span class="header-section-number">6.4</span> Credibility Intervals</h2>
+<p>The 90% credibility intervals for the model coefficients are visualized in <a href="#fig-credibility-intervals" class="quarto-xref">Figure&nbsp;9</a>. These intervals highlight the uncertainty around the estimated effects for each predictor. Notably, the treatmentInoculation variable has a positive and significant effect, providing evidence for the effectiveness of psychological inoculation interventions.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-credibility-intervals" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-credibility-intervals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="paper_files/figure-html/fig-credibility-intervals-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-credibility-intervals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Credibility intervals for Bayesian model coefficients
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="appendix-full-model-summary" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="appendix-full-model-summary"><span class="header-section-number">6.5</span> Appendix: Full Model Summary</h2>
+<p>A full summary of the Bayesian model results, including estimates, standard errors, and credible intervals, is provided in Appendix <a href="#tbl-model-summary" class="quarto-xref">Table&nbsp;6</a>.</p>
+<div class="cell">
+<div id="tbl-model-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: Detailed summary of Bayesian regression model
+</figcaption>
+<div aria-describedby="tbl-model-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small" data-quarto-postprocess="true">
+<caption>Detailed Bayesian regression model summary with formatted predictor labels</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Predictor</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estimate</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Standard Error</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">95% CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Baseline: Intercept</td>
+<td style="text-align: right;">1.7203731</td>
+<td style="text-align: right;">0.1556312</td>
+<td style="text-align: left;">(1.47, 1.97)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatment: Inoculation</td>
+<td style="text-align: right;">0.8051978</td>
+<td style="text-align: right;">0.0494364</td>
+<td style="text-align: left;">(0.72, 0.89)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">standardized analytical thinking</td>
+<td style="text-align: right;">0.1897080</td>
+<td style="text-align: right;">0.0265371</td>
+<td style="text-align: left;">(0.15, 0.23)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">standardized conspiracy belief</td>
+<td style="text-align: right;">-0.1110474</td>
+<td style="text-align: right;">0.0263231</td>
+<td style="text-align: left;">(-0.15, -0.07)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">standardized bullshit receptivity</td>
+<td style="text-align: right;">-0.2256411</td>
+<td style="text-align: right;">0.0269526</td>
+<td style="text-align: left;">(-0.27, -0.18)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gender: Male</td>
+<td style="text-align: right;">-0.0661734</td>
+<td style="text-align: right;">0.0507698</td>
+<td style="text-align: left;">(-0.15, 0.02)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gender: Non-binary</td>
+<td style="text-align: right;">0.2685811</td>
+<td style="text-align: right;">0.2445712</td>
+<td style="text-align: left;">(-0.13, 0.67)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gender: Prefer not to say</td>
+<td style="text-align: right;">-0.5501243</td>
+<td style="text-align: right;">0.6685247</td>
+<td style="text-align: left;">(-1.69, 0.6)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">education: Doctorate</td>
+<td style="text-align: right;">-0.0846014</td>
+<td style="text-align: right;">0.1393060</td>
+<td style="text-align: left;">(-0.31, 0.14)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">education: High School</td>
+<td style="text-align: right;">-0.3881433</td>
+<td style="text-align: right;">0.3069305</td>
+<td style="text-align: left;">(-0.88, 0.12)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">education: Master's</td>
+<td style="text-align: right;">-0.0480515</td>
+<td style="text-align: right;">0.1370548</td>
+<td style="text-align: left;">(-0.27, 0.17)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">political ideology: Liberal</td>
+<td style="text-align: right;">0.3291228</td>
+<td style="text-align: right;">0.0591209</td>
+<td style="text-align: left;">(0.23, 0.42)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">political ideology: Moderate</td>
+<td style="text-align: right;">-0.0518104</td>
+<td style="text-align: right;">0.0662245</td>
+<td style="text-align: left;">(-0.16, 0.06)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age: 25-34</td>
+<td style="text-align: right;">-0.1802627</td>
+<td style="text-align: right;">0.0803282</td>
+<td style="text-align: left;">(-0.32, -0.05)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">age: 35-44</td>
+<td style="text-align: right;">-0.2426529</td>
+<td style="text-align: right;">0.0866116</td>
+<td style="text-align: left;">(-0.39, -0.1)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age: 45-54</td>
+<td style="text-align: right;">-0.1699136</td>
+<td style="text-align: right;">0.0887152</td>
+<td style="text-align: left;">(-0.31, -0.02)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">age: 55 or older</td>
+<td style="text-align: right;">-0.4156012</td>
+<td style="text-align: right;">0.0834768</td>
+<td style="text-align: left;">(-0.55, -0.28)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="interpretation-and-implications" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="interpretation-and-implications"><span class="header-section-number">6.6</span> Interpretation and Implications</h2>
+<p>The diagnostics and results presented here confirm that the Bayesian model is well-specified, converged, and fits the data appropriately. The findings support the theoretical underpinnings of psychological inoculation and its impact on critical thinking and misinformation resistance. </p>
+</section>
+</section>
+<section id="references" class="level1 unnumbered" data-number="7">
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">7 References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-citeMarginalEffects" class="csl-entry" role="listitem">
+Arel-Bundock, Vincent. 2023a. <em><span class="nocase">marginaleffects: Simple and Flexible Marginal Effects for Model Interpretation</span></em>. <a href="https://vincentarelbundock.github.io/marginaleffects/">https://vincentarelbundock.github.io/marginaleffects/</a>.
+</div>
+<div id="ref-citeModleSummary" class="csl-entry" role="listitem">
+———. 2023b. <em><span class="nocase">modelsummary: Beautiful and customizable tables in R</span></em>. <a href="https://vincentarelbundock.github.io/modelsummary/">https://vincentarelbundock.github.io/modelsummary/</a>.
+</div>
+<div id="ref-banas2011inoculation" class="csl-entry" role="listitem">
+Banas, John A., and Stephen A. Rains. 2011. <span>“Inoculation Theory and Resistance to Influence.”</span> <em>Annals of the International Communication Association</em> 35 (1): 97–119. <a href="https://doi.org/10.1080/23808985.2011.11679143">https://doi.org/10.1080/23808985.2011.11679143</a>.
+</div>
+<div id="ref-baron2000thinking" class="csl-entry" role="listitem">
+Baron, Jonathan. 2000. <em>Thinking and Deciding</em>. 3rd ed. New York: Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511840265">https://doi.org/10.1017/CBO9780511840265</a>.
+</div>
+<div id="ref-rstanarm" class="csl-entry" role="listitem">
+Goodrich, Ben, Jonah Gabry, Imad Ali, and Sam Brilleman. 2022. <span>“<span class="nocase">rstanarm: <span>Bayesian</span> applied regression modeling via <span>Stan</span></span>.”</span> <a href="https://mc-stan.org/rstanarm/">https://mc-stan.org/rstanarm/</a>.
+</div>
+<div id="ref-mcguire1964inducing" class="csl-entry" role="listitem">
+McGuire, William J. 1964. <span>“Inducing Resistance to Persuasion: Some Contemporary Approaches.”</span> <em>Advances in Experimental Social Psychology</em> 1: 191–229. <a href="https://doi.org/10.1016/S0065-2601(08)60052-0">https://doi.org/10.1016/S0065-2601(08)60052-0</a>.
+</div>
+<div id="ref-van2018conspiracy" class="csl-entry" role="listitem">
+Prooijen, Jan-Willem van, and Karen M. Douglas. 2018. <span>“Conspiracy Theories: Causes and Consequences.”</span> <em>Current Directions in Psychological Science</em> 27 (6): 583–90. <a href="https://doi.org/10.1177/0963721418771279">https://doi.org/10.1177/0963721418771279</a>.
+</div>
+<div id="ref-citeR" class="csl-entry" role="listitem">
+R Core Team. 2023. <em><span class="nocase">R: A Language and Environment for Statistical Computing</span></em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-roozenbeek2020inoculation" class="csl-entry" role="listitem">
+Roozenbeek, Jon, and Sander van der Linden. 2020. <span>“The <span>‘Inoculation’</span> Method to Combat Misinformation: A Systematic Review of Evidence.”</span> <em>Social Science &amp; Medicine</em> 258: 113137. <a href="https://doi.org/10.1016/j.socscimed.2020.113137">https://doi.org/10.1016/j.socscimed.2020.113137</a>.
+</div>
+<div id="ref-citeArrow" class="csl-entry" role="listitem">
+Team, Apache Arrow Development. 2023. <em><span class="nocase">arrow: Integration to Apache Arrow</span></em>. <a href="https://arrow.apache.org/">https://arrow.apache.org/</a>.
+</div>
+<div id="ref-citeTidyverse" class="csl-entry" role="listitem">
+Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy D’Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019. <span>“Welcome to the <span class="nocase">tidyverse</span>.”</span> <em>Journal of Open Source Software</em> 4 (43): 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
+</div>
+<div id="ref-citeGgplot2" class="csl-entry" role="listitem">
+Wickham, Hadley, Winston Chang, Lionel Henry, Thomas Lin Pedersen, Kohske Takahashi, Claus Wilke, Kara Woo, et al. 2023. <em><span class="nocase">ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics</span></em>. <a href="https://ggplot2.tidyverse.org/">https://ggplot2.tidyverse.org/</a>.
+</div>
+<div id="ref-citeKableExtra" class="csl-entry" role="listitem">
+Zhu, Hao. 2023. <em><span class="nocase">kableExtra: Construct Complex Table with ’kable’ and Pipe Syntax</span></em>. <a href="https://cran.r-project.org/package=kableExtra">https://cran.r-project.org/package=kableExtra</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

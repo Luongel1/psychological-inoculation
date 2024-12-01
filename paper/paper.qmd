@@ -7,7 +7,7 @@ thanks: "Special thanks to Rohan Alexander for his guidance. Data and code are a
 date: today
 date-format: long
 abstract: "Social media platforms have increasingly become battlegrounds for the dissemination of manipulative and deceptive content. This study investigates the efficacy of psychological inoculation in enhancing users' ability to discern manipulative from neutral content on social media, a concept referred to as 'technique discernment.' Utilizing Bayesian regression models and survey data, we examine the relationship between inoculation treatments and discernment scores while accounting for demographic and psychological covariates. The results reveal significant differences in discernment ability between treatment and control groups, highlighting the promise of inoculation as a tool for combating misinformation. These findings underline the importance of psychological resilience in navigating online ecosystems and inform strategies for future interventions."
-format: pdf
+output: pdf
 toc: true
 number-sections: true
 bibliography: references.bib
@@ -27,6 +27,15 @@ library(kableExtra)
 library(arrow)
 library(gridExtra)
 library(knitr)
+library(car)
+library(dplyr)
+library(stringr)
+library(magrittr)
+library(tibble)
+library(bayesplot)
+library(broom.mixed)
+
+
 
 
 cleaned_data <- read_parquet(here::here("data/02-analysis_data/analysis_data.parquet"))
@@ -76,10 +85,12 @@ To facilitate analysis, key variables were transformed and standardized:
 - **Political Ideology**: The `Political-Ideology` variable was recoded into meaningful categories ("Liberal," "Moderate," "Conservative") based on its original numeric levels.
 
 The final cleaned dataset included the following variables:
-`treatment`, `technique_discernment`, `standardized_analytical_thinking`, `standardized_conspiracy_belief`, `standardized_bullshit_receptivity`, `gender`, `education`, `political_ideology`, and `age_text.`
+`treatment`, `technique_discernment`, `standardized_analytical_thinking`, 
+
+`standardized_conspiracy_belief`,
+`standardized_bullshit_receptivity`, `gender`, `education`, `political_ideology`, and `age_text.`
 
 The cleaned dataset was summarized to provide an overview of its structure and distribution. @tbl-clean-data provides a preview of the first five rows of the dataset, highlighting key variables across treatment groups, psychological measures, and demographics.
-
 ```{r}
 #| label: tbl-clean-data
 #| tbl-cap: "Preview of the cleaned OSF dataset"
@@ -87,15 +98,29 @@ The cleaned dataset was summarized to provide an overview of its structure and d
 #| warning: false
 #| message: false
 
-# Preview of the first few rows of the dataset
+# Preview of the first few rows of the dataset with cleaned column names
 cleaned_data %>%
   slice_head(n = 5) %>%
-  select(treatment, technique_discernment, standardized_analytical_thinking,
-         standardized_conspiracy_belief, standardized_bullshit_receptivity,
-         gender, education, political_ideology, age_text) %>%
-  kable(booktabs = TRUE, linesep = "") %>%
-  kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
-  add_header_above(c(" " = 3, "Psychological Variables" = 3, "Demographics" = 3))
+  select(
+    treatment, technique_discernment, standardized_analytical_thinking,
+    standardized_conspiracy_belief, standardized_bullshit_receptivity,
+    gender, education, political_ideology, age_text
+  ) %>%
+  rename_with(~ stringr::str_replace_all(., "_", " ")) %>% # Replace underscores with spaces in column names
+  kable(booktabs = TRUE, linesep = "", longtable = TRUE) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    font_size = 7, # Slightly reduce font size for better fit
+    position = "center"
+  ) %>%
+  add_header_above(
+    c(" " = 1, "Psychological Variables" = 4, "Demographics" = 4) # Correct grouping for all 9 columns
+  ) %>%
+   column_spec(1, width = "1.8cm", bold = TRUE) %>% # Adjust column widths for clarity
+  column_spec(2:5, width = "1.5cm") %>% # Narrower columns for Psychological Variables
+  column_spec(6:9, width = "1.8cm") %>% # Adjust for Demographics
+  row_spec(0, bold = TRUE, background = "#f7f7f7") # Header row styling
 
 ```
 
@@ -108,14 +133,42 @@ cleaned_data %>%
 
 # Summary statistics for numeric variables
 numeric_summary <- cleaned_data %>%
-  select(technique_discernment, standardized_analytical_thinking,
-         standardized_conspiracy_belief, standardized_bullshit_receptivity) %>%
+  select(
+    technique_discernment,
+    standardized_analytical_thinking,
+    standardized_conspiracy_belief,
+    standardized_bullshit_receptivity
+  ) %>%
   summary()
 
+# Rename variables to replace underscores with spaces
+colnames(numeric_summary) <- stringr::str_replace_all(
+  colnames(numeric_summary),
+  "_",
+  " "
+)
+
+# Render the table with adjusted formatting
 numeric_summary %>%
-  kable(booktabs = TRUE, linesep = "") %>%
-  kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
-  add_header_above(c(" " = 1, "Numeric Variables Summary" = 4))
+  kable(
+    booktabs = TRUE,
+    linesep = "",
+    longtable = TRUE, # Enables table spanning multiple pages
+    align = "c" # Center-align contents
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = TRUE, # Ensures the table doesn't stretch
+    font_size = 10, # Adjust font size for better readability
+    position = "center" # Centers the table on the page
+  ) %>%
+  add_header_above(
+    c(" " = 1, "Numeric Variables Summary" = 4) # Correct grouping for the header
+  ) %>%
+  column_spec(1, bold = TRUE, width = "4cm") %>% # Adjust and bold the first column
+  column_spec(2:5, width = "3cm") %>% # Adjust widths for numeric columns
+  row_spec(0, bold = TRUE, background = "#f7f7f7") # Style the header row
+
 ```
 
 ```{r}
@@ -124,13 +177,6 @@ numeric_summary %>%
 #| echo: false
 #| warning: false
 #| message: false
-
-# Load necessary libraries
-if (!require("knitr")) install.packages("knitr")
-if (!require("kableExtra")) install.packages("kableExtra")
-library(dplyr)
-library(knitr)
-library(kableExtra)
 
 # Summarize categorical variables and combine into one data frame
 categorical_summary <- bind_rows(
@@ -161,17 +207,17 @@ categorical_summary <- bind_rows(
 ) %>%
   arrange(Variable, desc(Frequency)) # Order by variable and frequency
 
-# Recalculate group indices for clear grouping
-group_indices <- categorical_summary %>%
+# Format table to show variable headers with their respective details listed beneath
+formatted_table <- categorical_summary %>%
   group_by(Variable) %>%
-  summarize(
-    start = min(row_number()),
-    end = max(row_number()),
-    .groups = "drop"
-  )
+  mutate(
+    Variable = if_else(row_number() == 1, Variable, "") # Show Variable name only once
+  ) %>%
+  ungroup() %>%
+  select(Variable, Category, Frequency) # Select the relevant columns
 
-# Create a well-formatted table using kableExtra
-table_output <- categorical_summary %>%
+# Create a well-formatted hierarchical table using kableExtra
+formatted_table %>%
   kbl(
     booktabs = TRUE,
     col.names = c("Variable", "Category", "Frequency"),
@@ -181,21 +227,16 @@ table_output <- categorical_summary %>%
     bootstrap_options = c("striped", "hover", "condensed", "responsive"),
     full_width = FALSE,
     position = "center",
-    font_size = 14
-  )
-
-# Add group rows dynamically for better alignment and clarity
-for (i in seq_len(nrow(group_indices))) {
-  table_output <- table_output %>%
-    group_rows(group_indices$Variable[i], group_indices$start[i], group_indices$end[i])
-}
-
-# Display the final table
-table_output
+    font_size = 12
+  ) %>%
+  column_spec(1, bold = TRUE, width = "10em") %>% # Bold and adjust width for Variable column
+  column_spec(2, width = "12em") %>% # Adjust width of Category column
+  column_spec(3, width = "8em") %>% # Adjust width of Frequency column
+  row_spec(0, bold = TRUE, background = "#f2f2f2") # Style header row
 
 ```
 
-@tbl-categorical demonstrates a balanced experimental design between the treatment groups, with 2,757 participants in the Control group and 2,748 in the Inoculation group. Gender distribution reflects a higher representation of females (2,751) and males (2,685), alongside smaller groups of non-binary individuals (52) and those preferring not to disclose their gender (7). Regarding education, the data is skewed towards participants with advanced degrees, as evidenced by 2,306 participants holding Doctorates and 1,709 with Master's degrees, whereas only a small fraction reported High School (37) or Bachelor's education (149). Political ideology distribution shows considerable diversity: 2,201 participants identify as Liberal, 2,147 as Conservative, and 1,157 as Moderate. Age distribution spans a broad range, with the largest cohort being participants aged 55 or older (1,528) and the smallest being those aged 18–24 (707).
+@tbl-categorial demonstrates a balanced experimental design between the treatment groups, with 2,757 participants in the Control group and 2,748 in the Inoculation group. Gender distribution reflects a higher representation of females (2,751) and males (2,685), alongside smaller groups of non-binary individuals (52) and those preferring not to disclose their gender (7). Regarding education, the data is skewed towards participants with advanced degrees, as evidenced by 2,306 participants holding Doctorates and 1,709 with Master's degrees, whereas only a small fraction reported High School (37) or Bachelor's education (149). Political ideology distribution shows considerable diversity: 2,201 participants identify as Liberal, 2,147 as Conservative, and 1,157 as Moderate. Age distribution spans a broad range, with the largest cohort being participants aged 55 or older (1,528) and the smallest being those aged 18–24 (707).
 
 
 @tbl-numeric complements the categorical insights by providing key statistics about continuous variables. For `technique_discernment`, scores range widely from -4.89 to 6.00, with a mean of 1.83, indicating that participants’ ability to discern information varies greatly. The first quartile (0.50) and median (1.83) suggest a central tendency around a moderately positive discernment score.
@@ -253,7 +294,6 @@ Ensuring balance across demographic variables is critical for isolating treatmen
 #| warning: false
 #| message: false
 
-
 # Combine demographic plots into one panel
 plot_gender <- ggplot(cleaned_data, aes(x = treatment, fill = gender)) +
   geom_bar(position = "fill") +
@@ -280,7 +320,9 @@ grid.arrange(plot_gender, plot_education, plot_ideology, ncol = 3)
 
 ```
 
-The standardized psychological variables: `standardized_analytical_thinking`, `standardized_bullshit_receptivity`, and `standardized_conspiracy_belief`—are key metrics for evaluating cognitive and emotional responses to misinformation. @fig-psych compares these variables across treatment groups, revealing slight but consistent differences favoring the inoculation group. For instance, the inoculation group shows lower susceptibility to conspiracy beliefs, aligning with the intended effects of the intervention.
+The standardized psychological variables: `standardized_analytical_thinking`,
+
+`standardized_bullshit_receptivity`, and `standardized_conspiracy_belief`—are key metrics for evaluating cognitive and emotional responses to misinformation. @fig-psych compares these variables across treatment groups, revealing slight but consistent differences favoring the inoculation group. For instance, the inoculation group shows lower susceptibility to conspiracy beliefs, aligning with the intended effects of the intervention.
 
 ```{r}
 #| label: fig-psych
@@ -291,23 +333,26 @@ The standardized psychological variables: `standardized_analytical_thinking`, `s
 
 # Reshape data to long format
 long_data <- cleaned_data %>%
-  pivot_longer(cols = c(standardized_analytical_thinking, 
-                        standardized_bullshit_receptivity, 
-                        standardized_conspiracy_belief),
-               names_to = "variable",
-               values_to = "value")
+  pivot_longer(
+    cols = c(standardized_analytical_thinking, 
+             standardized_bullshit_receptivity, 
+             standardized_conspiracy_belief),
+    names_to = "variable",
+    values_to = "value"
+  ) %>%
+  mutate(variable = stringr::str_replace_all(variable, "_", " ")) # Replace underscores with spaces
 
 # Plot using facets
 ggplot(long_data, aes(x = treatment, y = value, fill = treatment)) +
   geom_violin(alpha = 0.7) +
-  labs(title = "Psychological Variables by Treatment", 
-       x = "Treatment Group", 
-       y = "Standardized Value") +
+  labs(
+    title = "Psychological Variables by Treatment", 
+    x = "Treatment Group", 
+    y = "Standardized Value"
+  ) +
   scale_fill_brewer(palette = "Set2") +
   theme_minimal() +
   facet_wrap(~ variable, scales = "free_y")
-
-
 
 ```
 To explore potential interaction effects between age and political ideology, @fig-age-ideology examines the relationship between these variables across treatment groups. Younger participants (ages 18-34) tend to lean liberal, while older participants are more evenly distributed across ideological categories. This interaction warrants further analysis to determine its implications for treatment effectiveness.
@@ -317,7 +362,6 @@ To explore potential interaction effects between age and political ideology, @fi
 #| echo: false
 #| warning: false
 #| message: false
-
 
 ggplot(cleaned_data, aes(x = age_text, fill = political_ideology)) +
   geom_bar(position = "fill") +
@@ -409,16 +453,6 @@ The Bayesian linear regression models, developed to assess the effects of psycho
 #| warning: false
 #| message: false
 
-# Ensure required libraries are installed
-if (!require("modelsummary")) install.packages("modelsummary")
-if (!require("broom.mixed")) install.packages("broom.mixed")
-if (!require("rstanarm")) install.packages("rstanarm")
-
-# Load required libraries
-library(modelsummary)
-library(broom.mixed)
-library(rstanarm)
-
 # Load the saved model
 psychological_model <- readRDS(file = here::here("models/psych_inoculation_model.rds"))
 
@@ -435,10 +469,6 @@ model_summary_table <- model_summary %>%
   ) %>%
   dplyr::select(term, estimate, std.error, conf.int)
 
-# Display the table using `kableExtra`
-library(knitr)
-library(kableExtra)
-
 model_summary_table %>%
   kbl(
     caption = "Psychological Inoculation Model Results",
@@ -448,7 +478,6 @@ model_summary_table %>%
     bootstrap_options = c("striped", "hover", "condensed", "responsive"),
     full_width = FALSE
   )
-
 
 ```
 @tbl-modelresults provides the posterior mean estimates and median absolute deviation (MAD) of the coefficients for each predictor. The intercept represents the expected outcome when all predictors are at their reference levels. For example, the baseline levels include individuals in the control group, identifying as "Male," with "High School" education, "Moderate" political ideology, and belonging to the "18–24" age group.
@@ -479,16 +508,6 @@ Credibility Intervals
 #| echo: false
 #| warning: false
 #| message: false
-
-# Ensure required libraries are installed
-if (!require("rstanarm")) install.packages("rstanarm")
-if (!require("ggplot2")) install.packages("ggplot2")
-if (!require("dplyr")) install.packages("dplyr")
-
-# Load libraries
-library(rstanarm)
-library(ggplot2)
-library(dplyr)
 
 # Extract posterior intervals (90% credible intervals) for coefficients only
 posterior_interval <- as.data.frame(posterior_interval(psychological_model, prob = 0.9))
@@ -587,12 +606,10 @@ The study demonstrates that psychological inoculation is a promising strategy fo
 Posterior predictive checks were conducted to evaluate how well the Bayesian model fits the data. In @fig-pp-check, the posterior predictive distribution is compared to the observed data for technique discernment. The close alignment between the distributions suggests that the model captures the key features of the data effectively.
 
 ```{r}
-#| label: fig-pp-check
-#| fig-cap: Posterior predictive checks for Bayesian model fit
 #| echo: false
 #| warning: false
 #| message: false
-
+#| include: false
 
 model <- stan_glm(
   formula = technique_discernment ~ treatment + standardized_analytical_thinking + 
@@ -605,6 +622,14 @@ model <- stan_glm(
   prior_aux = exponential(rate = 1, autoscale = TRUE),
   seed = 853
 )
+```
+
+```{r}
+#| label: fig-pp-check
+#| fig-cap: Posterior predictive checks for Bayesian model fit
+#| echo: false
+#| warning: false
+#| message: false
 
 pp_check(model, plotfun = "dens_overlay") +
   labs(title = "Posterior Predictive Check", x = "Technique Discernment", y = "Density") +
@@ -618,13 +643,40 @@ To assess the convergence of the Markov chain Monte Carlo (MCMC) algorithm used 
 #| label: fig-trace-plots
 #| fig-cap: "Trace plots for key model parameters"
 #| fig-subcap: ["Intercept", "Treatment: Inoculation", "Standardized Analytical Thinking"]
-#| layout-ncol: 3
 #| echo: false
 #| eval: true
 #| warning: false
 #| message: false
 
-plot(model, "trace", pars = c("(Intercept)", "treatmentInoculation", "standardized_analytical_thinking"))
+# Create trace plots for specific parameters
+trace_plot <- mcmc_trace(
+  as.array(model), 
+  pars = c("(Intercept)", "treatmentInoculation", "standardized_analytical_thinking"),
+  facet_args = list(ncol = 1) # Arrange plots vertically
+)
+
+# Replace "_" with " " in parameter titles
+trace_plot <- trace_plot +
+  scale_y_discrete(labels = c(
+    "(Intercept)" = "Baseline: Intercept",
+    "treatmentInoculation" = "Treatment: Inoculation",
+    "standardized_analytical_thinking" = "Standardized Analytical Thinking"
+  )) +
+  theme_minimal(base_size = 5) +
+  labs(
+    title = "Trace Plots for Key Model Parameters",
+    x = "Iteration",
+    y = "Parameter Values"
+  ) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    strip.text = element_text(size = 14)
+  )
+
+# Display the trace plot
+trace_plot
 
 ```
 In addition, the Rhat diagnostic was computed to assess convergence quantitatively. As shown in @fig-rhat, all Rhat values are close to 1, indicating good convergence across all model parameters.
@@ -637,7 +689,46 @@ In addition, the Rhat diagnostic was computed to assess convergence quantitative
 #| warning: false
 #| message: false
 
-plot(model, "rhat")
+# Extract Rhat values
+rhat_values <- bayesplot::rhat(model)  # This works directly with a fitted Bayesian model object
+
+# Convert Rhat values to a data frame
+rhat_data <- as.data.frame(rhat_values) %>%
+  rownames_to_column(var = "Parameter") %>%
+  rename(Rhat = rhat_values) %>%
+  mutate(
+    Parameter = gsub("_", " ", Parameter), # Replace underscores with spaces
+    Parameter = stringr::str_replace_all(Parameter, "\\(Intercept\\)", "Baseline: Intercept"),
+    Parameter = stringr::str_replace(Parameter, "treatmentInoculation", "treatment: Inoculation"),
+    Parameter = stringr::str_replace(Parameter, "genderMale", "gender: Male"),
+    Parameter = stringr::str_replace(Parameter, "genderNon-binary", "gender: Non-binary"),
+    Parameter = stringr::str_replace(Parameter, "genderPrefer not to say", "gender: Prefer not to say"),
+    Parameter = stringr::str_replace(Parameter, "educationDoctorate", "education: Doctorate"),
+    Parameter = stringr::str_replace(Parameter, "educationHigh School", "education: High School"),
+    Parameter = stringr::str_replace(Parameter, "educationMaster's", "education: Master's"),
+    Parameter = stringr::str_replace(Parameter, "political ideologyLiberal", "political ideology: Liberal"),
+    Parameter = stringr::str_replace(Parameter, "political ideologyModerate", "political ideology: Moderate"),
+    Parameter = stringr::str_replace(Parameter, "age text25-34", "age: 25-34"),
+    Parameter = stringr::str_replace(Parameter, "age text35-44", "age: 35-44"),
+    Parameter = stringr::str_replace(Parameter, "age text45-54", "age: 45-54"),
+    Parameter = stringr::str_replace(Parameter, "age text55 or older", "age: 55 or older")
+  )
+
+# Plot Rhat values
+ggplot(rhat_data, aes(x = Rhat, y = reorder(Parameter, Rhat))) +
+  geom_point(size = 3, color = "blue") +
+  labs(
+    title = "Rhat Diagnostic for Model Convergence",
+    x = "Rhat Values",
+    y = "Model Parameters"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14)
+  ) +
+  geom_vline(xintercept = 1.1, linetype = "dashed", color = "red") # Highlight Rhat threshold
 
 ```
 ## Multicollinearity Assessment
@@ -650,23 +741,18 @@ Variance Inflation Factor (VIF) values were calculated to detect potential multi
 #| warning: false
 #| message: false
 
-# Load the required library
-if (!require("car")) install.packages("car")
-library(car)
-
 # Calculate VIF values for the model
 vif_values <- vif(model)  # Replace 'model' with the actual model object name
-
-
+    
 vif_values %>%
   as.data.frame() %>%
   rownames_to_column("Predictor") %>%
+  mutate(Predictor = gsub("_", " ", Predictor)) %>% # Replace underscores with spaces
   kable(
     booktabs = TRUE,
     caption = "VIF values for Bayesian regression predictors"
   ) %>%
   kable_styling(full_width = FALSE, position = "center")
-
 ```
 ## Credibility Intervals
 The 90% credibility intervals for the model coefficients are visualized in @fig-credibility-intervals. These intervals highlight the uncertainty around the estimated effects for each predictor. Notably, the treatmentInoculation variable has a positive and significant effect, providing evidence for the effectiveness of psychological inoculation interventions.
@@ -705,22 +791,41 @@ A full summary of the Bayesian model results, including estimates, standard erro
 #| warning: false
 #| message: false
 
+# Update labels for predictors
+model_summary <- model_summary %>%
+  dplyr::mutate(
+    term = stringr::str_replace_all(term, "_", " "), # Replace underscores with spaces
+    term = stringr::str_replace_all(term, "\\(Intercept\\)", "Baseline: Intercept"), # Format intercept
+    term = stringr::str_replace(term, "treatmentInoculation", "treatment: Inoculation"),
+    term = stringr::str_replace(term, "genderMale", "gender: Male"), # Format gender terms
+    term = stringr::str_replace(term, "genderNon-binary", "gender: Non-binary"),
+    term = stringr::str_replace(term, "genderPrefer not to say", "gender: Prefer not to say"),
+    term = stringr::str_replace(term, "educationDoctorate", "education: Doctorate"), # Format education terms
+    term = stringr::str_replace(term, "educationHigh School", "education: High School"),
+    term = stringr::str_replace(term, "educationMaster's", "education: Master's"),
+    term = stringr::str_replace(term, "political ideologyLiberal", "political ideology: Liberal"), # Format ideology
+    term = stringr::str_replace(term, "political ideologyModerate", "political ideology: Moderate"),
+    term = stringr::str_replace(term, "age text25-34", "age: 25-34"), # Format age groups
+    term = stringr::str_replace(term, "age text35-44", "age: 35-44"),
+    term = stringr::str_replace(term, "age text45-54", "age: 45-54"),
+    term = stringr::str_replace(term, "age text55 or older", "age: 55 or older")
+  )
+
+# Generate and display the table with formatted labels
 model_summary %>%
   dplyr::select(term, estimate, std.error, conf.low, conf.high) %>%
   dplyr::mutate(
-    term = stringr::str_replace_all(term, "_", " "), # Format terms for readability
-    conf.int = paste0("(", round(conf.low, 2), ", ", round(conf.high, 2), ")")
+    conf.int = paste0("(", round(conf.low, 2), ", ", round(conf.high, 2), ")") # Format confidence intervals
   ) %>%
   dplyr::select(term, estimate, std.error, conf.int) %>%
   kbl(
-    caption = "Detailed Bayesian regression model summary",
+    caption = "Detailed Bayesian regression model summary with formatted predictor labels",
     col.names = c("Predictor", "Estimate", "Standard Error", "95% CI")
   ) %>%
   kable_styling(
     bootstrap_options = c("striped", "hover", "condensed", "responsive"),
     full_width = FALSE
   )
-
 ```
 
 ## Interpretation and Implications

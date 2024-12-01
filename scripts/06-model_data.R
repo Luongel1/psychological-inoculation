@@ -57,6 +57,8 @@ write_csv(as.data.frame(vif_values), "models/vif_values.csv")
 #### Save Model ####
 # Save the fitted model as an RDS file
 saveRDS(model, file = "models/psych_inoculation_model.rds")
+setwd("C:/Users/eliza/OneDrive/Documents/R/psychological-inoculation")
+getwd()
 
 #### Extract Model Coefficients ####
 #### Extract Model Coefficients ####
