@@ -7,7 +7,7 @@ thanks: "Special thanks to Rohan Alexander for his guidance. Data and code are a
 date: today
 date-format: long
 abstract: "Social media platforms have increasingly become battlegrounds for the dissemination of manipulative and deceptive content. This study investigates the efficacy of psychological inoculation in enhancing users' ability to discern manipulative from neutral content on social media, a concept referred to as 'technique discernment.' Utilizing Bayesian regression models and survey data, we examine the relationship between inoculation treatments and discernment scores while accounting for demographic and psychological covariates. The results reveal significant differences in discernment ability between treatment and control groups, highlighting the promise of inoculation as a tool for combating misinformation. These findings underline the importance of psychological resilience in navigating online ecosystems and inform strategies for future interventions."
-output: pdf
+format: pdf
 toc: true
 number-sections: true
 bibliography: references.bib
@@ -34,8 +34,6 @@ library(magrittr)
 library(tibble)
 library(bayesplot)
 library(broom.mixed)
-
-
 
 
 cleaned_data <- read_parquet(here::here("data/02-analysis_data/analysis_data.parquet"))
@@ -85,10 +83,8 @@ To facilitate analysis, key variables were transformed and standardized:
 - **Political Ideology**: The `Political-Ideology` variable was recoded into meaningful categories ("Liberal," "Moderate," "Conservative") based on its original numeric levels.
 
 The final cleaned dataset included the following variables:
-`treatment`, `technique_discernment`, `standardized_analytical_thinking`, 
-
-`standardized_conspiracy_belief`,
-`standardized_bullshit_receptivity`, `gender`, `education`, `political_ideology`, and `age_text.`
+`treatment`, `technique_discernment`, `standardized_analytical_thinking`,
+`standardized_conspiracy_belief`, `standardized_bullshit_receptivity`, `gender`, `education`, `political_ideology`, and `age_text.`
 
 The cleaned dataset was summarized to provide an overview of its structure and distribution. @tbl-clean-data provides a preview of the first five rows of the dataset, highlighting key variables across treatment groups, psychological measures, and demographics.
 ```{r}
@@ -125,58 +121,13 @@ cleaned_data %>%
 ```
 
 ```{r}
-#| label: tbl-numeric
-#| tbl-cap: "Statistics summary of the numeric variables in cleaned OSF dataset"
-#| echo: false
-#| warning: false
-#| message: false
-
-# Summary statistics for numeric variables
-numeric_summary <- cleaned_data %>%
-  select(
-    technique_discernment,
-    standardized_analytical_thinking,
-    standardized_conspiracy_belief,
-    standardized_bullshit_receptivity
-  ) %>%
-  summary()
-
-# Rename variables to replace underscores with spaces
-colnames(numeric_summary) <- stringr::str_replace_all(
-  colnames(numeric_summary),
-  "_",
-  " "
-)
-
-# Render the table with adjusted formatting
-numeric_summary %>%
-  kable(
-    booktabs = TRUE,
-    linesep = "",
-    longtable = TRUE, # Enables table spanning multiple pages
-    align = "c" # Center-align contents
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-    full_width = TRUE, # Ensures the table doesn't stretch
-    font_size = 10, # Adjust font size for better readability
-    position = "center" # Centers the table on the page
-  ) %>%
-  add_header_above(
-    c(" " = 1, "Numeric Variables Summary" = 4) # Correct grouping for the header
-  ) %>%
-  column_spec(1, bold = TRUE, width = "4cm") %>% # Adjust and bold the first column
-  column_spec(2:5, width = "3cm") %>% # Adjust widths for numeric columns
-  row_spec(0, bold = TRUE, background = "#f7f7f7") # Style the header row
-
-```
-
-```{r}
 #| label: tbl-categorial
 #| tbl-cap: "Statistics summary of the categorical variables in cleaned OSF dataset"
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-height: 5 
+#| fig-width: 15
 
 # Summarize categorical variables and combine into one data frame
 categorical_summary <- bind_rows(
@@ -236,8 +187,55 @@ formatted_table %>%
 
 ```
 
-@tbl-categorial demonstrates a balanced experimental design between the treatment groups, with 2,757 participants in the Control group and 2,748 in the Inoculation group. Gender distribution reflects a higher representation of females (2,751) and males (2,685), alongside smaller groups of non-binary individuals (52) and those preferring not to disclose their gender (7). Regarding education, the data is skewed towards participants with advanced degrees, as evidenced by 2,306 participants holding Doctorates and 1,709 with Master's degrees, whereas only a small fraction reported High School (37) or Bachelor's education (149). Political ideology distribution shows considerable diversity: 2,201 participants identify as Liberal, 2,147 as Conservative, and 1,157 as Moderate. Age distribution spans a broad range, with the largest cohort being participants aged 55 or older (1,528) and the smallest being those aged 18–24 (707).
+```{r}
+#| label: tbl-numeric
+#| tbl-cap: "Statistics summary of the numeric variables in cleaned OSF dataset"
+#| echo: false
+#| warning: false
+#| message: false
 
+# Summary statistics for numeric variables
+numeric_summary <- cleaned_data %>%
+  select(
+    technique_discernment,
+    standardized_analytical_thinking,
+    standardized_conspiracy_belief,
+    standardized_bullshit_receptivity
+  ) %>%
+  summary()
+
+# Rename variables to replace underscores with spaces
+colnames(numeric_summary) <- stringr::str_replace_all(
+  colnames(numeric_summary),
+  "_",
+  " "
+)
+
+# Render the table with adjusted formatting
+numeric_summary %>%
+  kable(
+    booktabs = TRUE,
+    linesep = "",
+    longtable = TRUE, # Enables table spanning multiple pages
+    align = "c" # Center-align contents
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = TRUE, # Ensures the table doesn't stretch
+    font_size = 10, # Adjust font size for better readability
+    position = "center" # Centers the table on the page
+  ) %>%
+  add_header_above(
+    c(" " = 1, "Numeric Variables Summary" = 4) # Correct grouping for the header
+  ) %>%
+  column_spec(1, bold = TRUE, width = "4cm") %>% # Adjust and bold the first column
+  column_spec(2:5, width = "3cm") %>% # Adjust widths for numeric columns
+  row_spec(0, bold = TRUE, background = "#f7f7f7") # Style the header row
+
+
+```
+
+@tbl-categorial demonstrates a balanced experimental design between the treatment groups, with 2,757 participants in the Control group and 2,748 in the Inoculation group. Gender distribution reflects a higher representation of females (2,751) and males (2,685), alongside smaller groups of non-binary individuals (52) and those preferring not to disclose their gender (7). Regarding education, the data is skewed towards participants with advanced degrees, as evidenced by 2,306 participants holding Doctorates and 1,709 with Master's degrees, whereas only a small fraction reported High School (37) or Bachelor's education (149). Political ideology distribution shows considerable diversity: 2,201 participants identify as Liberal, 2,147 as Conservative, and 1,157 as Moderate. Age distribution spans a broad range, with the largest cohort being participants aged 55 or older (1,528) and the smallest being those aged 18–24 (707).
 
 @tbl-numeric complements the categorical insights by providing key statistics about continuous variables. For `technique_discernment`, scores range widely from -4.89 to 6.00, with a mean of 1.83, indicating that participants’ ability to discern information varies greatly. The first quartile (0.50) and median (1.83) suggest a central tendency around a moderately positive discernment score.
 
@@ -276,12 +274,21 @@ The psychological inoculation approach aims to improve individuals' ability to d
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-height: 8 
+#| fig-width: 10
 
 ggplot(cleaned_data, aes(x = treatment, y = technique_discernment, fill = treatment)) +
   geom_boxplot(alpha = 0.7, outlier.shape = NA) +
   scale_fill_brewer(palette = "Set2") +
   labs(title = "Technique Discernment by Treatment", x = "Treatment Group", y = "Technique Discernment") +
-  theme_minimal()
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 20, face = "bold"),
+    axis.text.x = element_text(size = 18),
+    axis.text.y = element_text(size = 18),
+    axis.title.y = element_text(size = 20),
+    axis.title.x = element_text(size = 20)
+  )
 
 ```
 
@@ -293,30 +300,72 @@ Ensuring balance across demographic variables is critical for isolating treatmen
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-height: 7 
+#| fig-width: 15
 
-# Combine demographic plots into one panel
+
 plot_gender <- ggplot(cleaned_data, aes(x = treatment, fill = gender)) +
   geom_bar(position = "fill") +
   scale_y_continuous(labels = scales::percent) +
   scale_fill_brewer(palette = "Set2") +
-  labs(title = "Gender Distribution", x = "Treatment Group", y = "Proportion") +
-  theme_minimal()
+  labs(
+    title = "Gender Distribution",
+    x = "Treatment Group",
+    y = "Proportion"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 15),
+    axis.text.y = element_text(size = 18),
+    plot.title = element_text(size = 20, face = "bold"),
+    legend.title = element_text(size = 18),
+    legend.text = element_text(size = 18),
+    axis.title.y = element_text(size = 20),
+    axis.title.x = element_text(size = 20)
+  )
 
 plot_education <- ggplot(cleaned_data, aes(x = treatment, fill = education)) +
   geom_bar(position = "fill") +
   scale_y_continuous(labels = scales::percent) +
   scale_fill_brewer(palette = "Set3") +
-  labs(title = "Education Distribution", x = "Treatment Group", y = "Proportion") +
-  theme_minimal()
+  labs(
+    title = "Education Distribution",
+    x = "Treatment Group",
+    y = "Proportion"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 15),
+    axis.text.y = element_text(size = 18),
+    plot.title = element_text(size = 20, face = "bold"),
+    legend.title = element_text(size = 18),
+    legend.text = element_text(size = 18)
+  )
 
 plot_ideology <- ggplot(cleaned_data, aes(x = treatment, fill = political_ideology)) +
   geom_bar(position = "fill") +
   scale_y_continuous(labels = scales::percent) +
   scale_fill_brewer(palette = "Dark2") +
-  labs(title = "Political Ideology Distribution", x = "Treatment Group", y = "Proportion") +
-  theme_minimal()
+  labs(
+    title = "Political Ideology Distribution",
+    x = "Treatment Group",
+    y = "Proportion"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 15),
+    axis.text.y = element_text(size = 18),
+    plot.title = element_text(size = 20, face = "bold"),
+    legend.title = element_text(size = 18),
+    legend.text = element_text(size = 18)
+  )
 
-grid.arrange(plot_gender, plot_education, plot_ideology, ncol = 3)
+# Arrange the plots in a single row with spacing adjustments
+grid.arrange(
+  plot_gender, plot_education, plot_ideology,
+  ncol = 3,
+  widths = c(1.1, 1.1, 1.1) # Adjust widths for equal proportions
+)
 
 ```
 
@@ -330,6 +379,8 @@ The standardized psychological variables: `standardized_analytical_thinking`,
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-height: 8 
+#| fig-width: 17
 
 # Reshape data to long format
 long_data <- cleaned_data %>%
@@ -344,7 +395,7 @@ long_data <- cleaned_data %>%
 
 # Plot using facets
 ggplot(long_data, aes(x = treatment, y = value, fill = treatment)) +
-  geom_violin(alpha = 0.7) +
+  geom_violin(alpha = 0.7, color = "black") + # Add black outline for contrast
   labs(
     title = "Psychological Variables by Treatment", 
     x = "Treatment Group", 
@@ -352,7 +403,18 @@ ggplot(long_data, aes(x = treatment, y = value, fill = treatment)) +
   ) +
   scale_fill_brewer(palette = "Set2") +
   theme_minimal() +
-  facet_wrap(~ variable, scales = "free_y")
+  theme(
+    plot.title = element_text(size = 34, face = "bold", hjust = 0.5), # Center and enlarge title
+    axis.title.x = element_text(size = 21, face = "bold"), # Adjust x-axis label size
+    axis.title.y = element_text(size = 21, face = "bold"), # Adjust y-axis label size
+    axis.text.x = element_text(size = 21, angle = 45, hjust = 1), # Rotate and size x-axis text
+    axis.text.y = element_text(size = 21), # Adjust y-axis text size
+    strip.text = element_text(size = 18, face = "bold"),  # Adjust facet labels size
+    legend.title = element_text(size = 18, face = "bold"), # Adjust legend title size
+    legend.text = element_text(size = 18), # Adjust legend text size
+    panel.grid.major = element_line(size = 0.5, linetype = "dashed", color = "gray") # Add subtle grid lines
+  ) +
+  facet_wrap(~ variable, scales = "free_y", nrow = 1) # Ensure facets are in a single row for better fit
 
 ```
 To explore potential interaction effects between age and political ideology, @fig-age-ideology examines the relationship between these variables across treatment groups. Younger participants (ages 18-34) tend to lean liberal, while older participants are more evenly distributed across ideological categories. This interaction warrants further analysis to determine its implications for treatment effectiveness.
@@ -362,14 +424,30 @@ To explore potential interaction effects between age and political ideology, @fi
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-height: 5 
+#| fig-width: 8
 
 ggplot(cleaned_data, aes(x = age_text, fill = political_ideology)) +
   geom_bar(position = "fill") +
   facet_wrap(~ treatment) +
   scale_y_continuous(labels = scales::percent) +
   scale_fill_brewer(palette = "Pastel1") +
-  labs(title = "Age and Political Ideology Interaction", x = "Age Group", y = "Proportion") +
-  theme_minimal()
+  labs(
+    title = "Age and Political Ideology Interaction", 
+    x = "Age Group", 
+    y = "Proportion"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5), # Center and bold title
+    axis.title.x = element_text(size = 14, face = "bold"),           # Larger and bold x-axis title
+    axis.title.y = element_text(size = 14, face = "bold"),           # Larger and bold y-axis title
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),    # Rotate x-axis labels for readability
+    axis.text.y = element_text(size = 12),                           # Increase y-axis text size
+    strip.text = element_text(size = 14, face = "bold"),             # Larger facet labels
+    legend.title = element_text(size = 14, face = "bold"),           # Larger legend title
+    legend.text = element_text(size = 12)                            # Larger legend text
+  )
 
 ```
 
@@ -381,7 +459,8 @@ This study employs a Bayesian linear regression model to investigate the effects
 
 \begin{align}
 y_i | \mu_i, \sigma^2 &\sim \text{Normal}(\mu_i, \sigma^2) \\
-\mu_i &= \alpha + \beta_1 \times \text{Treatment}_i + \beta_2 \times \text{Gender}_i + \beta_3 \times \text{Education}_i + \beta_4 \times \text{Political Ideology}_i
+\mu_i &= \alpha + \beta_1 \times \text{Treatment}_i + \beta_2 \times \text{Gender}_i + \beta_3 \times \text{Education}_i + \beta_4 \times \\                              
+\text{Political Ideology}_i
 + \beta_5 \times \text{Age Group}_i \\
 \alpha &\sim \text{Normal}(0, 2.5) \\
 \beta_j &\sim \text{Normal}(0, 2.5), \quad j = 1, 2, ..., 5
@@ -452,6 +531,8 @@ The Bayesian linear regression models, developed to assess the effects of psycho
 #| eval: true
 #| warning: false
 #| message: false
+#| fig-height: 5
+#| fig-width: 15
 
 # Load the saved model
 psychological_model <- readRDS(file = here::here("models/psych_inoculation_model.rds"))
@@ -508,6 +589,8 @@ Credibility Intervals
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-height: 5 
+#| fig-width: 10
 
 # Extract posterior intervals (90% credible intervals) for coefficients only
 posterior_interval <- as.data.frame(posterior_interval(psychological_model, prob = 0.9))
@@ -555,10 +638,10 @@ ggplot(posterior_interval, aes(x = reorder(Predictor, Estimate), y = Estimate)) 
     x = "Predictors",
     y = "Estimate (90% CI)"
   ) +
-  theme_minimal(base_size = 12) +
+  theme_minimal(base_size = 18) +
   theme(
-    axis.text.y = element_text(size = 10),
-    plot.title = element_text(size = 14, face = "bold")
+    axis.text.y = element_text(size = 18),
+    plot.title = element_text(size = 18, face = "bold")
   ) +
   coord_flip()
 ```
@@ -630,11 +713,19 @@ model <- stan_glm(
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-height: 8 
+#| fig-width: 10
 
 pp_check(model, plotfun = "dens_overlay") +
   labs(title = "Posterior Predictive Check", x = "Technique Discernment", y = "Density") +
-  theme_minimal()
-
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 20, face = "bold"),
+    axis.text.x = element_text(size = 18),
+    axis.text.y = element_text(size = 18),
+    axis.title.y = element_text(size = 20),
+    axis.title.x = element_text(size = 20)
+  )
 ```
 ## Markov Chain Monte Carlo Convergence Check
 To assess the convergence of the Markov chain Monte Carlo (MCMC) algorithm used in the Bayesian regression, trace plots were generated for all parameters. These trace plots, shown in @fig-trace-plots, demonstrate horizontal, oscillating patterns with no significant trends, suggesting that the chains have reached stationarity and mixed well.
@@ -647,6 +738,8 @@ To assess the convergence of the Markov chain Monte Carlo (MCMC) algorithm used 
 #| eval: true
 #| warning: false
 #| message: false
+#| fig-height: 8 
+#| fig-width: 10
 
 # Create trace plots for specific parameters
 trace_plot <- mcmc_trace(
@@ -669,10 +762,11 @@ trace_plot <- trace_plot +
     y = "Parameter Values"
   ) +
   theme(
-    plot.title = element_text(size = 16, face = "bold"),
-    axis.title.x = element_text(size = 12),
-    axis.title.y = element_text(size = 12),
-    strip.text = element_text(size = 14)
+    plot.title = element_text(size = 20, face = "bold"),
+    axis.title.x = element_text(size = 18),
+    axis.title.y = element_text(size = 18),
+    strip.text = element_text(size = 18),
+    legend.text = element_text(size = 18)
   )
 
 # Display the trace plot
@@ -688,6 +782,8 @@ In addition, the Rhat diagnostic was computed to assess convergence quantitative
 #| eval: true
 #| warning: false
 #| message: false
+#| fig-height: 5
+#| fig-width: 10
 
 # Extract Rhat values
 rhat_values <- bayesplot::rhat(model)  # This works directly with a fitted Bayesian model object
@@ -724,9 +820,9 @@ ggplot(rhat_data, aes(x = Rhat, y = reorder(Parameter, Rhat))) +
   ) +
   theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14)
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5),
+    axis.text = element_text(size = 18),
+    axis.title = element_text(size = 20)
   ) +
   geom_vline(xintercept = 1.1, linetype = "dashed", color = "red") # Highlight Rhat threshold
 
@@ -740,6 +836,8 @@ Variance Inflation Factor (VIF) values were calculated to detect potential multi
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-height: 5 
+#| fig-width: 15
 
 # Calculate VIF values for the model
 vif_values <- vif(model)  # Replace 'model' with the actual model object name
@@ -757,6 +855,8 @@ vif_values %>%
 ## Credibility Intervals
 The 90% credibility intervals for the model coefficients are visualized in @fig-credibility-intervals. These intervals highlight the uncertainty around the estimated effects for each predictor. Notably, the treatmentInoculation variable has a positive and significant effect, providing evidence for the effectiveness of psychological inoculation interventions.
 
+\newpage
+
 ```{r}
 #| label: fig-credibility-intervals
 #| fig-cap: "Credibility intervals for Bayesian model coefficients"
@@ -764,6 +864,8 @@ The 90% credibility intervals for the model coefficients are visualized in @fig-
 #| eval: true
 #| warning: false
 #| message: false
+#| fig-height: 5 
+#| fig-width: 10
 
 posterior_interval %>%
   mutate(Predictor = factor(Predictor, levels = Predictor[order(Estimate)])) %>%
@@ -776,7 +878,14 @@ posterior_interval %>%
     y = "Estimate"
   ) +
   theme_minimal() +
-  coord_flip()
+  coord_flip() +
+  theme(
+    plot.title = element_text(size = 20, face = "bold"),
+    axis.text.x = element_text( size = 18),
+    axis.text.y = element_text(size = 18),
+    axis.title.y = element_text(size = 20),
+    axis.title.x = element_text(size = 20)
+  )
 
 ```
 
@@ -790,6 +899,8 @@ A full summary of the Bayesian model results, including estimates, standard erro
 #| eval: true
 #| warning: false
 #| message: false
+#| fig-height: 5 
+#| fig-width: 15
 
 # Update labels for predictors
 model_summary <- model_summary %>%
