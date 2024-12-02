@@ -6,10 +6,12 @@ author:
 thanks: "Special thanks to Rohan Alexander for his guidance. Data and code are available at https://github.com/Luongel1/psychological-inoculation.git."
 date: today
 date-format: long
-abstract: "Social media platforms have increasingly become battlegrounds for the dissemination of manipulative and deceptive content. This study investigates the efficacy of psychological inoculation in enhancing users' ability to discern manipulative from neutral content on social media, a concept referred to as 'technique discernment.' Utilizing Bayesian regression models and survey data, we examine the relationship between inoculation treatments and discernment scores while accounting for demographic and psychological covariates. The results reveal significant differences in discernment ability between treatment and control groups, highlighting the promise of inoculation as a tool for combating misinformation. These findings underline the importance of psychological resilience in navigating online ecosystems and inform strategies for future interventions."
-format: pdf
-toc: true
-number-sections: true
+abstract: >
+  Social media is increasingly used to spread manipulative and deceptive content, posing risks to informed public discourse. This paper explores whether psychological inoculation—a strategy akin to a "vaccine" for misinformation—can improve users' ability to identify manipulative techniques on social media, termed "technique discernment." Using Bayesian regression models and survey data, the study finds that individuals exposed to inoculation treatments scored significantly higher in discerning manipulative content compared to those in control groups, even when accounting for demographic and psychological differences. These results demonstrate the potential of inoculation strategies to build resilience against misinformation, providing practical guidance for designing interventions in digital spaces.
+format:
+  pdf:
+    toc: true
+    number-sections: true
 bibliography: references.bib
 ---
 
@@ -42,20 +44,25 @@ cleaned_data <- read_parquet(here::here("data/02-analysis_data/analysis_data.par
 
 # Introduction
 
-Social media's influence on public opinion has brought increasing attention to the concerns about misinformation and manipulative content. These platforms facilitate the spread of misleading narratives that shape beliefs, decisions, and behaviors. Addressing this challenge is vital to preserving informed decision-making and democratic processes.
+Social media's influence on public opinion has raised growing concerns about the spread of misinformation and manipulative content. These platforms enable the rapid dissemination of misleading narratives that shape beliefs, decisions, and behaviors, posing challenges to informed decision-making and democratic processes. Addressing these concerns is essential for fostering a resilient and well-informed public.
 
-Psychological inoculation offers a proactive approach to misinformation, arming individuals with the tools to resist manipulation before exposure. Analogous to a medical vaccine, inoculation introduces individuals to weakened forms of manipulative techniques, fostering resistance to their influence when encountered in real-world scenarios. This research examines the efficacy of psychological inoculation in enhancing "technique discernment"—the ability to distinguish manipulative content from neutral information—on social media.
+Psychological inoculation offers a proactive solution by equipping individuals with the cognitive tools to resist manipulation before encountering it. Similar to a vaccine, inoculation introduces individuals to weakened forms of manipulative techniques, thereby building their resistance to such tactics in real-world scenarios. This study investigates whether inoculation can enhance "technique discernment," or the ability to distinguish manipulative from neutral content on social media.
 
-This study uses data from a carefully controlled survey experiment in which participants were randomly assigned to inoculation or control conditions. Responses were collected on their ability to evaluate manipulative and neutral posts, alongside a range of demographic and psychological covariates. Bayesian regression models were employed to assess the treatment effect while accounting for factors such as age, gender, education, political ideology, and psychological traits.
+The estimand of this study is the average treatment effect (ATE) of inoculation on technique discernment scores. This represents the difference in discernment ability between individuals exposed to inoculation treatments and those in control conditions, measured across a representative sample.
 
-The results reveal a significant positive impact of inoculation on discernment scores, demonstrating the potential for preemptive interventions to bolster resistance to misinformation. Furthermore, analysis of demographic and psychological covariates provides insights into the differential effectiveness of the intervention across subgroups.
+Using data from a randomized survey experiment, participants were assigned to either inoculation or control conditions and evaluated on their ability to identify manipulative and neutral content. Bayesian regression models were applied to estimate the treatment effect while controlling for demographic and psychological factors, such as age, gender, education, political ideology, and cognitive traits. The findings show a significant positive effect of inoculation on discernment scores, underscoring its potential to strengthen resistance to misinformation. Further analysis highlights how demographic and psychological characteristics moderate the intervention's effectiveness.
+
+The results show a significant positive impact of inoculation on discernment scores, demonstrating the potential for preemptive interventions to bolster resistance to misinformation. Furthermore, analysis of demographic and psychological covariates shows the differential effectiveness of the intervention across subgroups.
 
 The remainder of this paper is structured as follows: @sec-data details the data and methods used, @sec-model describes the statistical approach and Bayesian modeling framework, @sec-results presents the findings with supporting visualizations, and @sec-discussion concludes with implications and recommendations for addressing the challenges of misinformation on social media.
 
 
 # Data {#sec-data}
 
-The data for this study is analyzed using the statistical programming language R [@citeR], leveraging an extensive suite of packages for data cleaning, analysis, visualization, and modeling. The primary packages include `tidyverse` [@citeTidyverse] for data manipulation and visualization, `arrow` [@citeArrow] for efficient data storage and retrieval, `ggplot2` [@citeGgplot2] for data visualization, and `rstanarm` [@rstanarm] for Bayesian modeling. Additional packages used include `modelsummary` [@citeModleSummary] for generating model summaries, `marginaleffects` [@citeMarginalEffects] for interpreting statistical models, and `kableExtra` [@citeKableExtra] for creating polished tables.
+The data for this study is analyzed using the statistical programming language R [@citeR], using an extensive suite of packages for data cleaning, analysis, visualization, and modeling. The primary packages include `tidyverse` [@citeTidyverse] for data manipulation and visualization, `arrow` [@citeArrow] for efficient data storage and retrieval, `ggplot2` [@citeGgplot2] for creating detailed visualizations, and `rstanarm` [@rstanarm] for Bayesian regression modeling. Additional libraries used are here for managing file paths, `modelsummary` [@citeModelSummary] for streamlined model summaries, `kableExtra` [@citeKableExtra] for formatting polished tables, `gridExtra` and `knitr` for
+visualization and reporting, and car for regression diagnostics such as VIF calculation.
+
+For statistical modeling and reporting, `bayesplot` and `broom.mixed` facilitate Bayesian posterior checks and tidy summaries of model outputs, respectively. `dplyr`, `stringr`, and `tibble` are employed for data manipulation and string handling, while magrittr enables efficient piping operations. This diverse set of packages ensures a robust analytical workflow for investigating the effects of psychological inoculation.
 
 These tools enable the analysis of a dataset focused on psychological inoculation, specifically its effect on participants' ability to discern manipulative techniques in social media content. The data preparation and analysis pipeline ensures robust handling of variables and addresses potential sources of bias, making the results both reliable and interpretable.
 
@@ -66,13 +73,13 @@ The data for this study was sourced from a controlled experimental design hosted
 
 Data collection followed strict ethical protocols, including obtaining informed consent and ensuring participant confidentiality. Participants were randomly assigned to inoculation or control groups and completed a series of tasks assessing their discernment of manipulative and neutral social media posts. Additionally, demographic factors such as age, gender, education, and political ideology, along with psychological traits, were recorded to enable detailed analysis of covariate effects.
 
-This dataset is particularly suitable for evaluating the impact of inoculation interventions due to its comprehensive design, which captures the treatment's efficacy and explores its relationship with various demographic and psychological variables. The structured and transparent methodology ensures reliability, making this dataset an ideal resource for testing the proposed hypotheses.
+This dataset is particularly suitable for evaluating the impact of inoculation interventions due to its design, which captures the treatment's efficacy and explores its relationship with various demographic and psychological variables. The structured and transparent methodology ensures reliability, making this dataset an ideal resource for testing the proposed hypotheses.
 
 ## Data Cleaning and Variables
 
 The dataset used in this study underwent extensive cleaning to ensure the inclusion of only relevant variables and high-quality data for the analysis. The raw data was read from the "Combined" tab of OSF's 'Studies 1-5 datasets' and systematically processed to address missing values, renamed variables for clarity, and standardize the dataset for meaningful analysis. This process resulted in a structured dataset with clearly defined variables essential for exploring the relationship between psychological inoculation and participants’ ability to discern manipulative content on social media.
 
-The cleaning process started by filtering out rows with missing values in critical variables, such as `Condition`, `Diff-Technique`, `Age-text`, `Gender-text`, `Education`, `Political-Ideology`, `Bullshit-Receptivity`, `Conspiracy-Belief`, and `Analytical-Thinking`. The rationale for this step was to ensure that all variables of interest had complete information, enabling meaningful analysis.
+The cleaning process started by filtering out rows with missing values, such as `Condition`, `Diff-Technique`, `Age-text`, `Gender-text`, `Education`, `Political-Ideology`, `Bullshit-Receptivity`, `Conspiracy-Belief`, and `Analytical-Thinking`. The rationale for this step was to ensure that all variables of interest had complete information, enabling meaningful analysis.
 
 To facilitate analysis, key variables were transformed and standardized:
 
@@ -235,9 +242,9 @@ numeric_summary %>%
 
 ```
 
-@tbl-categorial demonstrates a balanced experimental design between the treatment groups, with 2,757 participants in the Control group and 2,748 in the Inoculation group. Gender distribution reflects a higher representation of females (2,751) and males (2,685), alongside smaller groups of non-binary individuals (52) and those preferring not to disclose their gender (7). Regarding education, the data is skewed towards participants with advanced degrees, as evidenced by 2,306 participants holding Doctorates and 1,709 with Master's degrees, whereas only a small fraction reported High School (37) or Bachelor's education (149). Political ideology distribution shows considerable diversity: 2,201 participants identify as Liberal, 2,147 as Conservative, and 1,157 as Moderate. Age distribution spans a broad range, with the largest cohort being participants aged 55 or older (1,528) and the smallest being those aged 18–24 (707).
+@tbl-categorial demonstrates a balanced experimental design between the treatment groups, with 2,757 participants in the Control group and 2,748 in the Inoculation group. Gender distribution reflects a higher representation of females (2,751) and males (2,685), alongside smaller groups of non-binary individuals (52) and those preferring not to disclose their gender (7). Regarding education, the data is skewed towards participants with post-graduate degrees, as evidenced by 2,306 participants holding Doctorates and 1,709 with Master's degrees, whereas only a small fraction reported High School (37) or Bachelor's education (149). Political ideology distribution shows considerable diversity: 2,201 participants identify as Liberal, 2,147 as Conservative, and 1,157 as Moderate. Age distribution spans a broad range, with the largest cohort being participants aged 55 or older (1,528) and the smallest being those aged 18–24 (707).
 
-@tbl-numeric complements the categorical insights by providing key statistics about continuous variables. For `technique_discernment`, scores range widely from -4.89 to 6.00, with a mean of 1.83, indicating that participants’ ability to discern information varies greatly. The first quartile (0.50) and median (1.83) suggest a central tendency around a moderately positive discernment score.
+@tbl-numeric complements the categorical summary by providing key statistics about continuous variables. For `technique_discernment`, scores range widely from -4.89 to 6.00, with a mean of 1.83, indicating that participants’ ability to discern information varies greatly. The first quartile (0.50) and median (1.83) suggest a central tendency around a moderately positive discernment score.
 
 Similarly, `standardized_analytical_thinking` has a mean of 0, consistent with standardization, and ranges from -1.16 to 1.76. The third quartile value (0.79) indicates that a significant portion of participants scored above average in analytical thinking.
 
@@ -245,19 +252,17 @@ For `standardized_conspiracy_belief`, the mean of 0 and a range of -2.77 to 1.79
 
 ## Data Measurment
 
-Because the data for this research was collected through surveys, it is crucial to recognize the potential for inconsistencies, biases, and misinterpretations in the respondents' answers. This section examines what the variables are intended to measure and identifies any potential issues with their interpretation or accuracy.
-
-The variable Condition assigns respondents to either the "Control" or "Inoculation" treatment groups. This assignment is self-reported and dependent on accurate data handling during survey administration. Any misclassification in this variable could compromise the validity of treatment effect estimations. The balance between the two groups, as reflected in the summary tables, suggests appropriate randomization, but unmeasured biases could still affect the results.
+Because the data for this research was collected through surveys, it is essential to acknowledge the potential for inconsistencies, biases, and misinterpretations in the respondents' answers. This section examines what the variables are intended to measure and identifies any potential issues with their interpretation or accuracy.
 
 The psychological variables, including `Diff-Technique` (representing technique discernment), `Bullshit-Receptivity`, `Conspiracy-Belief`, and `Analytical-Thinking`, are measured using self-reported scales. These measures depend heavily on respondents’ honest and consistent self-assessments. For example, respondents may overstate their analytical thinking abilities or understate their susceptibility to conspiratorial beliefs due to social desirability bias. Furthermore, while these variables were standardized for comparability, it is essential to note that standardization assumes a normal distribution of the underlying constructs, which may not hold true for all measures.
 
-Demographic variables such as `Gender-text`, `Education`, and `Age-text` provide critical contextual information but are also subject to issues of self-reporting. For instance, the `Gender-text` variable captures a wide range of gender identities, including "Non-binary" and "Prefer not to say." While this inclusivity is commendable, it introduces variability in the dataset, particularly when group sizes are small, which could limit statistical power in subgroup analyses.
+Demographic variables such as `Gender-text`, `Education`, and `Age-text` provide contextual information but are also subject to issues of self-reporting. For instance, the `Gender-text` variable captures a wide range of gender identities, including "Non-binary" and "Prefer not to say." While this inclusivity is commendable, it introduces variability in the dataset, particularly when group sizes are small, which could limit statistical power in subgroup analyses.
 
 Similarly, the `Education` variable categorizes respondents into levels such as "High School," "Bachelor's," "Master's," and "Doctorate." While these categories provide a clear stratification of educational attainment, there may be discrepancies in how respondents interpret their educational qualifications, particularly for international participants whose education systems may not align with these classifications. Missing values in this variable could also indicate respondents' reluctance to disclose their educational background.
 
 The `Age-text` variable represents respondents' age groups, providing a straightforward breakdown into categories such as "18-24," "25-34," and "55 or older." These categories offer a broad overview but may overlook finer gradations in age that could influence psychological or behavioral outcomes.
 
-The variable `Political-Ideology` categorizes respondents into "Liberal," "Moderate," and "Conservative." While these categories simplify analysis, they may mask the nuance of individuals' political beliefs, particularly for those who hold mixed or unconventional ideologies. Additionally, respondents' self-reported political alignment might be influenced by social desirability or recall bias, particularly in polarized contexts where identifying with one ideology may carry stigma.
+The variable `Political-Ideology` categorizes respondents into "Liberal," "Moderate," and "Conservative." While these categories simplify analysis, they may mask the variation of individuals' political beliefs, particularly for those who hold mixed or unconventional ideologies. Additionally, respondents' self-reported political alignment might be influenced by social desirability or recall bias, particularly in polarized contexts where identifying with one ideology may carry stigma.
 
 Like many survey-based studies, this dataset is subject to recall bias, social desirability bias, and potential non-response biases. For instance, participants may provide responses that they perceive as socially acceptable rather than those that truly reflect their beliefs or behaviors. Furthermore, missing data in key variables such as `Education` and `Political-Ideology` could lead to biased estimates if the missingness is not random.
 
@@ -292,7 +297,7 @@ ggplot(cleaned_data, aes(x = treatment, y = technique_discernment, fill = treatm
 
 ```
 
-Ensuring balance across demographic variables is critical for isolating treatment effects. @fig-demographics illustrates the distribution of key demographic variables across treatment groups. Gender representation appears balanced, with similar proportions of male, female, and non-binary participants in both groups. Education and political ideology also display reasonable distributions, mitigating concerns of systematic imbalances.
+Ensuring balance across demographic variables is essential for isolating treatment effects. @fig-demographics illustrates the distribution of key demographic variables across treatment groups. Gender representation appears balanced, with similar proportions of male, female, and non-binary participants in both groups. Education and political ideology also display reasonable distributions, mitigating concerns of systematic imbalances.
 
 ```{r}
 #| label: fig-demographics
@@ -371,7 +376,7 @@ grid.arrange(
 
 The standardized psychological variables: `standardized_analytical_thinking`,
 
-`standardized_bullshit_receptivity`, and `standardized_conspiracy_belief`—are key metrics for evaluating cognitive and emotional responses to misinformation. @fig-psych compares these variables across treatment groups, revealing slight but consistent differences favoring the inoculation group. For instance, the inoculation group shows lower susceptibility to conspiracy beliefs, aligning with the intended effects of the intervention.
+`standardized_bullshit_receptivity`, and `standardized_conspiracy_belief`—are key metrics for evaluating cognitive and emotional responses to misinformation. @fig-psych compares these variables across treatment groups, showing slight but consistent differences favoring the inoculation group. For instance, the inoculation group shows lower susceptibility to conspiracy beliefs, aligning with the intended effects of the intervention.
 
 ```{r}
 #| label: fig-psych
@@ -451,7 +456,7 @@ ggplot(cleaned_data, aes(x = age_text, fill = political_ideology)) +
 
 ```
 
-The visual analyses provide initial insights into the balance and variability of key variables across treatment groups. Differences in technique discernment and standardized psychological variables suggest potential treatment effects. However, the observed overlap and interaction effects highlight the need for multivariate modeling to disentangle causal relationships.
+The visual analyses offer an initial understanding of the balance and variability of key variables across treatment groups. Differences in technique discernment and standardized psychological variables suggest potential treatment effects. However, the observed overlap and interaction effects highlight the need for multivariate modeling to disentangle causal relationships.
 
 # Model {#sec-model}
 
@@ -486,7 +491,7 @@ Each parameter is assigned a weakly informative prior. The intercept and coeffic
 
 ## Modeling Approach
 
-Bayesian methods are particularly advantageous for this analysis, as they allow for the incorporation of prior information and produce a full posterior distribution for each parameter, enabling robust inference. This approach is particularly relevant in studies like psychological inoculation, where prior studies can provide valuable insights into expected effects.
+Bayesian methods are particularly advantageous for this analysis, as they allow for the incorporation of prior information and produce a full posterior distribution for each parameter, enabling robust inference. This approach is particularly relevant in studies like psychological inoculation, where prior research can provide important guidance on expected effects.
 
 Alternative approaches, such as frequentist regression, were considered but ultimately not adopted due to their limitations in handling uncertainty and prior information. The Bayesian framework enables a richer understanding of the data and more robust parameter estimation.
 
@@ -505,9 +510,9 @@ The linear regression framework is suitable for continuous outcome variables, su
 
 ## Model Justification
 
-The choice of a Bayesian regression model for this study is driven by the need to analyze the nuanced relationships between psychological measures, demographic variables, and treatment groups while accounting for uncertainty and potential confounding factors. Psychological inoculation theory posits that exposure to counterarguments or "inoculation treatments" strengthens resistance to misinformation and enhances critical thinking abilities. As such, a positive relationship is expected between being in the inoculation group and higher analytical thinking scores, as well as lower receptivity to bullshit statements and conspiracy beliefs. This expectation aligns with prior research demonstrating the efficacy of inoculation techniques in bolstering cognitive resistance to manipulative messaging [@banas2011inoculation; @roozenbeek2020inoculation].
+The choice of a Bayesian regression model for this study reflects the need to analyze the complex relationships between psychological measures, demographic variables, and treatment groups while accounting for uncertainty and potential confounding factors. Psychological inoculation theory posits that exposure to counterarguments or "inoculation treatments" strengthens resistance to misinformation and enhances critical-thinking abilities. As such, a positive relationship is expected between being in the inoculation group and higher analytical thinking scores, as well as lower receptivity to bullshit statements and conspiracy beliefs. This expectation aligns with prior research demonstrating the efficacy of inoculation techniques in bolstering cognitive resistance to manipulative messaging [@banas2011inoculation; @roozenbeek2020inoculation].
 
-Demographic variables such as gender, education, political ideology, and age group are included in the model as covariates to control for their potential influence on the psychological measures. For example, individuals with higher levels of education are hypothesized to exhibit greater analytical thinking and reduced receptivity to conspiratorial or nonsensical claims due to their exposure to critical reasoning frameworks during formal education. Similarly, political ideology may influence these outcomes, as previous studies suggest that ideological beliefs can shape susceptibility to misinformation and receptivity to conspiratorial narratives [@van2018conspiracy].
+Demographic variables such as gender, education, political ideology, and age group are included in the model as covariates to control for their potential influence on the psychological measures. For example, individuals with higher levels of education are hypothesized to exhibit greater analytical thinking and reduced receptivity to conspiratorial or nonsensical claims due to their exposure to critical-reasoning frameworks during formal education. Similarly, political ideology may influence these outcomes, as previous studies suggest that ideological beliefs can shape susceptibility to misinformation and receptivity to conspiratorial narratives [@van2018conspiracy].
 
 Gender and age group are also anticipated to play roles in psychological outcomes. Prior literature indicates that gender differences may exist in analytical thinking and susceptibility to certain cognitive biases, with some studies suggesting that men may score slightly higher on measures of analytical reasoning, whereas women may exhibit greater emotional intelligence and skepticism [@baron2000thinking]. Age, on the other hand, may influence individuals' familiarity with certain misinformation tactics, with younger individuals potentially being more attuned to online misinformation but older individuals potentially relying more on traditional media sources.
 
@@ -515,14 +520,14 @@ In terms of treatment effects, it is hypothesized that individuals in the inocul
 
 The Bayesian modeling approach is justified by its ability to incorporate prior knowledge and produce credible intervals for parameter estimates, offering a richer and more interpretable framework for hypothesis testing compared to frequentist methods. Moreover, Bayesian analysis provides flexibility in modeling categorical variables and controlling for demographic covariates, ensuring robust estimation of treatment effects. By explicitly modeling uncertainty, this approach enhances the reliability of the findings, particularly in the context of survey-based data where measurement error and sampling variability may be present.
 
-In summary, the Bayesian regression model is well-suited to address the research questions of this study, leveraging its ability to incorporate prior knowledge, handle complex relationships, and provide robust estimates of treatment effects while controlling for demographic variables. The model's structure and the inclusion of key covariates reflect a theoretically grounded approach to understanding the impact of psychological inoculation on critical thinking and resistance to misinformation.
+In summary, the Bayesian regression model is well-suited to address the research questions of this study, utilizing its capacity to incorporate prior knowledge, handle complex relationships, and provide robust estimates of treatment effects while accounting for demographic variables. The model's structure and the inclusion of key covariates reflect a theoretically grounded approach to understanding the impact of psychological inoculation on critical-thinking and resistance to misinformation.
 
 
 # Results {#sec-results}
 
 ## Model Summary
 
-The Bayesian linear regression models, developed to assess the effects of psychological inoculation on analytical thinking, bullshit receptivity, and conspiracy belief, reveal several notable findings. The results are summarized in @tbl-modelresults.
+The Bayesian linear regression models, developed to assess the effects of psychological inoculation on analytical thinking, bullshit receptivity, and conspiracy belief, show casing several notable findings. The results are summarized in @tbl-modelresults.
 
 ```{r}
 #| label: tbl-modelresults
@@ -570,7 +575,7 @@ The results indicate a statistically significant positive effect of the inoculat
 For bullshit receptivity, the results suggest a negative relationship between inoculation treatment and receptivity to misleading information. Individuals in the inoculation group exhibit lower bullshit receptivity scores, implying that the treatment enhances their ability to discern and reject implausible or deceptive claims.
 
 ### Conspiracy Belief
-The model examining conspiracy beliefs reveals that inoculation treatment reduces susceptibility to conspiracy theories. The negative coefficient for the treatment variable suggests a statistically significant decline in conspiracy belief scores among treated participants.
+The model examining conspiracy beliefs shows that inoculation treatment reduces susceptibility to conspiracy theories. The negative coefficient for the treatment variable suggests a statistically significant decline in conspiracy belief scores among treated participants.
 
 ### Demographic Effects
 Gender, education, political ideology, and age group are included as covariates to control for demographic differences:
@@ -645,7 +650,7 @@ ggplot(posterior_interval, aes(x = reorder(Predictor, Estimate), y = Estimate)) 
   ) +
   coord_flip()
 ```
-@fig-modelresults1 reveals that the treatment effect for analytical thinking, bullshit receptivity, and conspiracy belief is statistically significant. Demographic predictors such as education and political ideology also show significant relationships with these psychological measures.
+@fig-modelresults1 shows that the treatment effect for analytical thinking, bullshit receptivity, and conspiracy belief is statistically significant. Demographic predictors such as education and political ideology also show significant relationships with these psychological measures.
 
 ### Interpretation and Diagnostics
 The findings confirm the effectiveness of psychological inoculation in enhancing analytical thinking and reducing susceptibility to bullshit receptivity and conspiracy belief. The inclusion of demographic covariates ensures robust estimation of treatment effects, controlling for confounding factors.
@@ -656,13 +661,13 @@ Model diagnostics, including trace plots and posterior predictive checks, confir
 # Discussion {#sec-discussion}
 
 ## Effects of Psychological Inoculation on Analytical Thinking and Beliefs
-The results of the analysis provide evidence that psychological inoculation interventions significantly enhance analytical thinking and reduce susceptibility to conspiracy beliefs and receptivity to pseudo-profound statements. These findings support the hypothesis that exposing individuals to weakened forms of misinformation (inoculation) primes their cognitive defenses, making them better equipped to discern misinformation. Analytical thinking, in particular, showed a notable positive association with treatment, indicating that participants who received the inoculation intervention exhibited improved critical thinking abilities. This reinforces prior research suggesting that cognitive training methods can effectively mitigate the influence of misleading information.
+The results of the analysis provide evidence that psychological inoculation interventions significantly enhance analytical thinking and reduce susceptibility to conspiracy beliefs and receptivity to pseudo-profound statements. These findings support the hypothesis that exposing individuals to weakened forms of misinformation (inoculation) primes their cognitive defenses, making them better equipped to discern misinformation. Analytical thinking, in particular, showed a notable positive association with treatment, indicating that participants who received the inoculation intervention exhibited improved critical-thinking abilities. This reinforces prior research suggesting that cognitive training methods can effectively mitigate the influence of misleading information.
 
 ## Treatment Efficacy Across Demographics
-The analysis revealed variation in treatment effects across demographic groups. Gender differences, although small, suggested that male participants responded less positively to the inoculation intervention than females. Educational background also played a role, with participants holding higher levels of education demonstrating stronger improvements in analytical thinking and reductions in belief in conspiracies. These findings are consistent with the idea that individuals with greater baseline cognitive skills or educational attainment may be more receptive to interventions designed to enhance critical thinking. However, individuals with lower educational attainment may require additional or differently tailored interventions to achieve similar benefits.
+The analysis show cases variation in treatment effects across demographic groups. Gender differences, although small, suggested that male participants responded less positively to the inoculation intervention than females. Educational background also played a role, with participants holding higher levels of education demonstrating stronger improvements in analytical thinking and reductions in belief in conspiracies. These findings are consistent with the idea that individuals with greater baseline cognitive skills or educational attainment may be more receptive to interventions designed to enhance critical-thinking. However, individuals with lower educational attainment may require additional or differently tailored interventions to achieve similar benefits.
 
 ## Limitations of the Inoculation Strategy
-While the psychological inoculation approach demonstrated overall efficacy, several limitations merit discussion. First, the model does not account for potential reverse causality; individuals with higher baseline critical thinking skills may be more likely to benefit from inoculation, leading to self-selection effects. Additionally, the observed impact on conspiracy beliefs, while statistically significant, was modest, suggesting that deeply entrenched beliefs may be resistant to change even with well-designed interventions. Future research should explore whether prolonged or repeated inoculation sessions yield stronger effects.
+While the psychological inoculation approach demonstrated overall efficacy, several limitations merit discussion. First, the model does not account for potential reverse causality; individuals with higher baseline critical-thinking skills may be more likely to benefit from inoculation, leading to self-selection effects. Additionally, the observed impact on conspiracy beliefs, while statistically significant, was modest, suggesting that deeply entrenched beliefs may be resistant to change even with well-designed interventions. Future research should explore whether prolonged or repeated inoculation sessions yield stronger effects.
 
 ## Policy Implications and Recommendations
 The findings have important implications for combating misinformation in public discourse. Policymakers and educators could integrate inoculation strategies into educational programs, particularly in contexts where misinformation poses significant societal risks, such as public health or political decision-making. For example, media literacy initiatives could adopt inoculation techniques to train individuals to identify common rhetorical strategies used in misinformation campaigns. Moreover, platforms hosting user-generated content might consider embedding inoculative messages into their user interfaces to preemptively reduce the spread of false information.
@@ -670,14 +675,14 @@ The findings have important implications for combating misinformation in public 
 However, interventions must be carefully designed to account for varying levels of cognitive engagement and educational backgrounds across populations. Targeted approaches, such as simpler messaging for less educated groups or gamified interventions to increase engagement, may enhance the efficacy of these strategies.
 
 ## Weaknesses and Future Directions
-The study faced several methodological limitations. Missing data, particularly in demographic variables, reduced the representativeness of the sample and limited the generalizability of the findings. Furthermore, the study did not address potential confounding factors, such as participants' preexisting exposure to misinformation or individual differences in cognitive bias susceptibility. Future studies should incorporate more comprehensive covariates to capture the nuanced interplay between demographic, psychological, and environmental factors.
+The study faced several methodological limitations. Missing data, particularly in demographic variables, reduced the representativeness of the sample and limited the generalizability of the findings. Furthermore, the study did not address potential confounding factors, such as participants' preexisting exposure to misinformation or individual differences in cognitive bias susceptibility. Future studies should incorporate more exhaustive covariates to capture the complex interaction between demographic, psychological, and environmental factors.
 
-Additionally, while the intervention successfully improved analytical thinking and reduced belief in misinformation, it remains unclear whether these effects translate to behavioral outcomes, such as sharing misinformation online. Experimental designs that measure behavioral responses directly would provide more actionable insights into the real-world applicability of psychological inoculation.
+Additionally, while the intervention successfully improved analytical thinking and reduced belief in misinformation, it remains unclear whether these effects translate to behavioral outcomes, such as sharing misinformation online. Experimental designs that measure behavioral responses directly would offer more practical evidence of the real-world applicability of psychological inoculation.
 
-Finally, expanding the scope of the intervention to explore cross-cultural differences or applying it to different forms of misinformation (e.g., health-related versus political misinformation) could shed light on the universality and adaptability of inoculation strategies. Combining inoculation with complementary interventions, such as fact-checking or debunking, could further strengthen its impact.
+Finally, expanding the scope of the intervention to explore cross-cultural differences or applying it to different forms of misinformation (e.g., health-related versus political misinformation) could show the universality and adaptability of inoculation strategies. Combining inoculation with complementary interventions, such as fact-checking or debunking, could further strengthen its impact.
 
 ## Conclusion
-The study demonstrates that psychological inoculation is a promising strategy for enhancing critical thinking and reducing susceptibility to misinformation. While effective, it is not a panacea; additional research is needed to address its limitations and optimize its application in diverse contexts. The findings contribute to a growing body of evidence supporting interventions that empower individuals to navigate the complex and often misleading information landscape of the modern era.
+The study demonstrates that psychological inoculation is a promising strategy for enhancing critical-thinking and reducing susceptibility to misinformation. While effective, it is not a panacea; additional research is needed to address its limitations and optimize its application in diverse contexts. The findings contribute to a growing body of evidence supporting interventions that empower individuals to navigate the complex and often misleading information landscape of the modern era.
 
 \newpage
 
@@ -940,7 +945,7 @@ model_summary %>%
 ```
 
 ## Interpretation and Implications
-The diagnostics and results presented here confirm that the Bayesian model is well-specified, converged, and fits the data appropriately. The findings support the theoretical underpinnings of psychological inoculation and its impact on critical thinking and misinformation resistance.
+The diagnostics and results presented here confirm that the Bayesian model is well-specified, converged, and fits the data appropriately. The findings support the theoretical underpinnings of psychological inoculation and its impact on critical-thinking and misinformation resistance.
 \newpage
 
 
