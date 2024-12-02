@@ -42,6 +42,8 @@ cleaned_data <- read_parquet(here::here("data/02-analysis_data/analysis_data.par
 
 ```
 
+
+
 # Introduction
 
 Social media's influence on public opinion has raised growing concerns about the spread of misinformation and manipulative content. These platforms enable the rapid dissemination of misleading narratives that shape beliefs, decisions, and behaviors, posing challenges to informed decision-making and democratic processes. Addressing these concerns is essential for fostering a resilient and well-informed public.
@@ -94,6 +96,8 @@ The final cleaned dataset included the following variables:
 `standardized_conspiracy_belief`, `standardized_bullshit_receptivity`, `gender`, `education`, `political_ideology`, and `age_text.`
 
 The cleaned dataset was summarized to provide an overview of its structure and distribution. @tbl-clean-data provides a preview of the first five rows of the dataset, highlighting key variables across treatment groups, psychological measures, and demographics.
+
+
 ```{r}
 #| label: tbl-clean-data
 #| tbl-cap: "Preview of the cleaned OSF dataset"
@@ -242,6 +246,8 @@ numeric_summary %>%
 
 ```
 
+
+
 @tbl-categorial demonstrates a balanced experimental design between the treatment groups, with 2,757 participants in the Control group and 2,748 in the Inoculation group. Gender distribution reflects a higher representation of females (2,751) and males (2,685), alongside smaller groups of non-binary individuals (52) and those preferring not to disclose their gender (7). Regarding education, the data is skewed towards participants with post-graduate degrees, as evidenced by 2,306 participants holding Doctorates and 1,709 with Master's degrees, whereas only a small fraction reported High School (37) or Bachelor's education (149). Political ideology distribution shows considerable diversity: 2,201 participants identify as Liberal, 2,147 as Conservative, and 1,157 as Moderate. Age distribution spans a broad range, with the largest cohort being participants aged 55 or older (1,528) and the smallest being those aged 18–24 (707).
 
 @tbl-numeric complements the categorical summary by providing key statistics about continuous variables. For `technique_discernment`, scores range widely from -4.89 to 6.00, with a mean of 1.83, indicating that participants’ ability to discern information varies greatly. The first quartile (0.50) and median (1.83) suggest a central tendency around a moderately positive discernment score.
@@ -273,6 +279,8 @@ Despite these challenges, the dataset provides a rich foundation for exploring t
 
 The psychological inoculation approach aims to improve individuals' ability to discern techniques used in misinformation. To understand the treatment's impact, the distribution of `technique_discernment` was examined for the control and inoculation groups. As shown in @fig-technique, the inoculation group has a slightly higher mean discernment score compared to the control group, suggesting potential effectiveness. However, overlap in distributions indicates that further modeling is required to establish statistical significance.
 
+
+
 ```{r}
 #| label: fig-technique
 #| fig-cap: Distribution of Technique Discernment by Treatment Groups
@@ -297,7 +305,11 @@ ggplot(cleaned_data, aes(x = treatment, y = technique_discernment, fill = treatm
 
 ```
 
+
+
 Ensuring balance across demographic variables is essential for isolating treatment effects. @fig-demographics illustrates the distribution of key demographic variables across treatment groups. Gender representation appears balanced, with similar proportions of male, female, and non-binary participants in both groups. Education and political ideology also display reasonable distributions, mitigating concerns of systematic imbalances.
+
+
 
 ```{r}
 #| label: fig-demographics
@@ -374,9 +386,13 @@ grid.arrange(
 
 ```
 
+
+
 The standardized psychological variables: `standardized_analytical_thinking`,
 
 `standardized_bullshit_receptivity`, and `standardized_conspiracy_belief`—are key metrics for evaluating cognitive and emotional responses to misinformation. @fig-psych compares these variables across treatment groups, showing slight but consistent differences favoring the inoculation group. For instance, the inoculation group shows lower susceptibility to conspiracy beliefs, aligning with the intended effects of the intervention.
+
+
 
 ```{r}
 #| label: fig-psych
@@ -423,7 +439,11 @@ ggplot(long_data, aes(x = treatment, y = value, fill = treatment)) +
   facet_wrap(~ variable, scales = "free_y", nrow = 1) # Ensure facets are in a single row for better fit
 
 ```
+
+
 To explore potential interaction effects between age and political ideology, @fig-age-ideology examines the relationship between these variables across treatment groups. Younger participants (ages 18-34) tend to lean liberal, while older participants are more evenly distributed across ideological categories. This interaction warrants further analysis to determine its implications for treatment effectiveness.
+
+
 ```{r}
 #| label: fig-age-ideology
 #| fig-cap: Age and Political Ideology Distribution Across Treatment Groups
@@ -456,6 +476,8 @@ ggplot(cleaned_data, aes(x = age_text, fill = political_ideology)) +
   )
 
 ```
+
+
 
 The visual analyses offer an initial understanding of the balance and variability of key variables across treatment groups. Differences in technique discernment and standardized psychological variables suggest potential treatment effects. However, the observed overlap and interaction effects highlight the need for multivariate modeling to disentangle causal relationships.
 
@@ -530,6 +552,8 @@ In summary, the Bayesian regression model is well-suited to address the research
 
 The Bayesian linear regression models, developed to assess the effects of psychological inoculation on analytical thinking, bullshit receptivity, and conspiracy belief, show casing several notable findings. The results are summarized in @tbl-modelresults.
 
+
+
 ```{r}
 #| label: tbl-modelresults
 #| fig-cap: Summary of Bayesian Linear Regression on the Effects of Psychological Inoculation 
@@ -567,6 +591,8 @@ model_summary_table %>%
   )
 
 ```
+
+
 @tbl-modelresults provides the posterior mean estimates and median absolute deviation (MAD) of the coefficients for each predictor. The intercept represents the expected outcome when all predictors are at their reference levels. For example, the baseline levels include individuals in the control group, identifying as "Male," with "High School" education, "Moderate" political ideology, and belonging to the "18–24" age group.
 
 ### Analytical Thinking
@@ -588,6 +614,8 @@ Gender, education, political ideology, and age group are included as covariates 
 Credibility Intervals
 
 @fig-modelresults1 illustrates the 90% credibility intervals for the coefficients, highlighting the range of likely values for each estimate. Coefficients with credibility intervals that do not cross zero are statistically significant.
+
+
 
 ```{r}
 #| label: fig-modelresults1
@@ -651,6 +679,8 @@ ggplot(posterior_interval, aes(x = reorder(Predictor, Estimate), y = Estimate)) 
   ) +
   coord_flip()
 ```
+
+
 @fig-modelresults1 shows that the treatment effect for analytical thinking, bullshit receptivity, and conspiracy belief is statistically significant. Demographic predictors such as education and political ideology also show significant relationships with these psychological measures.
 
 ### Interpretation and Diagnostics
@@ -694,6 +724,8 @@ The study demonstrates that psychological inoculation is a promising strategy fo
 ## Posterior Predictive Checks
 Posterior predictive checks were conducted to evaluate how well the Bayesian model fits the data. In @fig-pp-check, the posterior predictive distribution is compared to the observed data for technique discernment. The close alignment between the distributions suggests that the model captures the key features of the data effectively.
 
+
+
 ```{r}
 #| echo: false
 #| warning: false
@@ -733,8 +765,12 @@ pp_check(model, plotfun = "dens_overlay") +
     axis.title.x = element_text(size = 20)
   )
 ```
+
+
 ## Markov Chain Monte Carlo Convergence Check
 To assess the convergence of the Markov chain Monte Carlo (MCMC) algorithm used in the Bayesian regression, trace plots were generated for all parameters. These trace plots, shown in @fig-trace-plots, demonstrate horizontal, oscillating patterns with no significant trends, suggesting that the chains have reached stationarity and mixed well.
+
+
 
 ```{r}
 #| label: fig-trace-plots
@@ -779,7 +815,11 @@ trace_plot <- trace_plot +
 trace_plot
 
 ```
+
+
 In addition, the Rhat diagnostic was computed to assess convergence quantitatively. As shown in @fig-rhat, all Rhat values are close to 1, indicating good convergence across all model parameters.
+
+
 
 ```{r}
 #| label: fig-rhat
@@ -833,8 +873,12 @@ ggplot(rhat_data, aes(x = Rhat, y = reorder(Parameter, Rhat))) +
   geom_vline(xintercept = 1.1, linetype = "dashed", color = "red") # Highlight Rhat threshold
 
 ```
+
+
 ## Multicollinearity Assessment
 Variance Inflation Factor (VIF) values were calculated to detect potential multicollinearity among predictors. All VIF values were below 5, indicating that multicollinearity is not a significant concern in the model. These results are summarized in Table @tbl-vif-values.
+
+
 
 ```{r}
 #| label: tbl-vif-values
@@ -858,10 +902,14 @@ vif_values %>%
   ) %>%
   kable_styling(full_width = FALSE, position = "center")
 ```
+
+
 ## Credibility Intervals
 The 90% credibility intervals for the model coefficients are visualized in @fig-credibility-intervals. These intervals highlight the uncertainty around the estimated effects for each predictor. Notably, the treatmentInoculation variable has a positive and significant effect, providing evidence for the effectiveness of psychological inoculation interventions.
 
 \newpage
+
+
 
 ```{r}
 #| label: fig-credibility-intervals
@@ -895,8 +943,12 @@ posterior_interval %>%
 
 ```
 
+
+
 ## Appendix: Full Model Summary
 A full summary of the Bayesian model results, including estimates, standard errors, and credible intervals, is provided in Appendix @tbl-model-summary.
+
+
 
 ```{r}
 #| label: tbl-model-summary
@@ -945,11 +997,14 @@ model_summary %>%
   )
 ```
 
+
+
 ## Interpretation and Implications
 The diagnostics and results presented here confirm that the Bayesian model is well-specified, converged, and fits the data appropriately. The findings support the theoretical underpinnings of psychological inoculation and its impact on critical-thinking and misinformation resistance.
 \newpage
 
 
 # References
+
 
 
